@@ -1,23 +1,27 @@
 import React from "react";
 import { Star, StarHalf, Heart, Eye } from "lucide-react";
-
-const Cart = ({ url, alt, name, price, discount, ratings, reviews }) => {
+import {Link} from "react-router";
+import { FaStar, FaStarHalf } from "react-icons/fa";
+const Cart = ({ url, alt, name, price, discount, ratings, reviews, id }) => {
   const calculateStart = (ratings) => {
     let result = [];
 
     for (let i = 0; i < Math.floor(ratings); i++) {
-      result.push(<Star key={i} className="size-4 text-yellow-400" />);
+      result.push(<FaStar key={i} className="size-4 text-yellow-400" />);
     }
 
     if (ratings % 1 !== 0) {
-      result.push(<StarHalf key="half" className="size-4 text-yellow-400" />);
+      result.push(<FaStarHalf key="half" className="size-4 text-yellow-400" />);
     }
 
     return result;
   };
 
+
+  
   return (
     <nav className="group">
+       <Link to={`/products/${id}`}>
       <div className="relative max-w-60 mb-4 overflow-hidden grow-0 rounded justify-stretch">
         <img className="size-60 grow cursor-pointer" src={url} alt={alt} />
         {discount && discount >= 8 && <div className="text-white py-0.5 bg-red-600  w-14 text-center
@@ -47,6 +51,7 @@ const Cart = ({ url, alt, name, price, discount, ratings, reviews }) => {
         <span className="flex gap-x-1.5">{...calculateStart(ratings)}</span>
         <span className="text-gray-500">({reviews})</span>
       </div>}
+      </Link>
     </nav>
   );
 };

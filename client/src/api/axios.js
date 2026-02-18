@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setToken } from "../redux/slices/authslice";
+import { setToken } from "../redux/slices/authSlice";
 import { useDispatch } from "react-redux";
 
 const api = axios.create({

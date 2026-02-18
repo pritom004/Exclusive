@@ -1,23 +1,51 @@
 import Product from "../models/product.model.js";
 export const products = async (req, res) => {
   try {
-    const { sort, limit = 20, category, minPrice, maxPrice, isNew } = req.query;
+    const {
+      sort,
+      limit = 20,
+      minPrice,
+      maxPrice,
+      status,
+      color,
+      size,
+      isNew,
+      category 
+    } = req.query;
 
     const filter = {};
 
-    // Filtering
-    if (category) {
+    if(category){
       filter.category = category;
     }
 
-    if (isNew === "true") {
-      filter.isNew = true;
-    }
-
+    // Price filter
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
       if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+
+    // Status filter
+    if (status) {
+      filter.status = status; // "In Stock", "Out of Stock", etc
+    }
+
+    // Color filter
+    if (color) {
+      filter.colors = color; // matches array
+    }
+
+    // Size filter
+    if (size) {
+      filter.sizes = size; // matches array
+    }
+
+    // New products (last 7 days)
+    if (isNew === "true") {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      filter.createdAt = { $gte: sevenDaysAgo };
     }
 
     // Sorting
@@ -25,7 +53,23 @@ export const products = async (req, res) => {
     if (sort === "discount_desc") sortOption.discount = -1;
     if (sort === "price_asc") sortOption.price = 1;
     if (sort === "price_desc") sortOption.price = -1;
-    if (sort === "rating_desc") sortOption.rating = -1;
+    if (sort === "newest") sortOption.createdAt = -1;
+
+    // If sorting by rating, we must use aggregation
+    if (sort === "rating_desc") {
+      const products = await Product.aggregate([
+        { $match: filter },
+        {
+          $addFields: {
+            avgRating: { $avg: "$ratings.rating" }
+          }
+        },
+        { $sort: { avgRating: -1 } },
+        { $limit: Number(limit) }
+      ]);
+
+      return res.json(products);
+    }
 
     const products = await Product.find(filter)
       .sort(sortOption)
@@ -33,7 +77,7 @@ export const products = async (req, res) => {
 
     res.json(products);
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       message: "Error fetching products",
       error: error.message,
     });

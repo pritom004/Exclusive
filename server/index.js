@@ -12,7 +12,6 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import cartRoutes from "./routes/cart.routes.js"
-import Product from "./models/product.model.js";
 
 const app = express();
 
@@ -38,12 +37,6 @@ connectDB().then(() => {
 })
 
 
-// async function getProducts(){
-//     const products = await Product.find().limit(12);
-//     console.log(products.length);
-// }
-
-// getProducts()
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

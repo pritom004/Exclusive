@@ -29,6 +29,7 @@ const descriptions = [
   "Limited edition collection.",
 ];
 
+const categories = ["Clothing", "Shoes", "Accessories"];
 const colors = ["Red", "Blue", "Black", "White", "Green", "Gray"];
 const sizes = ["S", "M", "L", "XL"];
 const statuses = ["In Stock", "Out of Stock", "Not Available"];
@@ -37,6 +38,8 @@ const statuses = ["In Stock", "Out of Stock", "Not Available"];
 const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const getRandomPrice = () => Math.floor(Math.random() * 200) + 20;
 const getRandomDiscount = () => Math.floor(Math.random() * 40); // 0–39%
+const getRandomQuantity = () => Math.floor(Math.random() * 50); // 0–49
+
 const getRandomImages = () => {
   const imageCount = Math.floor(Math.random() * 2) + 4; // 4–5 images
   const images = [];
@@ -55,16 +58,20 @@ const getRandomImages = () => {
 const products = [];
 
 for (let i = 0; i < 100; i++) {
+  const quantity = getRandomQuantity();
+
   products.push({
     name: `${getRandom(productNames)} ${i + 1}`,
     status: getRandom(statuses),
     price: getRandomPrice(),
     discount: getRandomDiscount(),
     description: getRandom(descriptions),
+    category: getRandom(categories),
     colors: [...colors].sort(() => 0.5 - Math.random()).slice(0, 3),
     sizes,
-    ratings: [], // required structure, but empty for seed
+    ratings: [], // empty reviews
     images: getRandomImages(),
+    quantity,
   });
 }
 

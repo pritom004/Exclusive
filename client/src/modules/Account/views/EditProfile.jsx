@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../../../components/common/Input";
 import Button from "../../../components/ui/Button";
 import { useDispatch } from "react-redux";
@@ -8,17 +8,28 @@ import toast from "react-hot-toast";
 const EditProfile = ({ user }) => {
   const dispatch = useDispatch();
 
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fields, setFields] = useState({
-    firstName: user.name.split(" ")[0] ?? "",
-    lastName: user.name.split(" ")[1] ?? "",
-    email: user.email ?? "",
-    address: user.address ?? "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    address: "",
     currentPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      setFields((previous) => ({
+        ...previous,
+        firstName: user.name.split(" ")[0] ?? "",
+        lastName: user.name.split(" ")[1] ?? "",
+        email: user.email ?? "",
+        address: user.address ?? "",
+      }));
+    }
+  }, []);
 
   const validateForm = () => {
     if (!fields.firstName.trim()) return toast.error("First name is required");
@@ -50,19 +61,18 @@ const EditProfile = ({ user }) => {
 
     if (isValidated) {
       setIsSubmitting(false);
-       dispatch(
-      updateProfile({
-        fullName: `${fields.firstName} ${fields.lastName}`,
-        email: fields.email,
-        address: fields.email,
-        currentPassword: fields.currentPassword,
-        newPassword: fields.newPassword,
-      }),
-    )
-    return;
+      dispatch(
+        updateProfile({
+          fullName: `${fields.firstName} ${fields.lastName}`,
+          email: fields.email,
+          address: fields.email,
+          currentPassword: fields.currentPassword,
+          newPassword: fields.newPassword,
+        }),
+      );
+      return;
     }
 
-   
     setIsSubmitting(false);
   };
 

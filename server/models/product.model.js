@@ -1,21 +1,27 @@
 import mongoose from "mongoose";
 
-const reviewSchema = new mongoose.Schema({
-  reviewerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const reviewSchema = new mongoose.Schema(
+  {
+    reviewerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    rating: {
+      type: Number,
+      required: true,
+    },
   },
-  rating: {
-    type: Number,
-    required: true,
-  },
-}, {_id:false});
+  { _id: false },
+);
 
-const imageSchema = new mongoose.Schema({
-  url: String,
-  alt: String,
-}, {_id: false});
+const imageSchema = new mongoose.Schema(
+  {
+    url: String,
+    alt: String,
+  },
+  { _id: false },
+);
 
 const productSchema = new mongoose.Schema(
   {
@@ -43,10 +49,19 @@ const productSchema = new mongoose.Schema(
     },
     discount: {
       type: Number,
-      default: 0
+      default: 0,
+    },
+    category: {
+      type: String,
+      required: true,
     },
     ratings: [reviewSchema],
     images: [imageSchema],
+    quantity: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
   },
   { timestamps: true },
 );

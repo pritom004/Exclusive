@@ -11,11 +11,15 @@ import { useSelector } from "react-redux";
 import Account from "./pages/Account";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import ProductDetails from "./pages/ProductDetails";
 
 function App() {
   const { loading, user } = useSelector((state) => state.auth);
 
-
+  if(loading){
+    return <div>Loading...</div>
+  }
+  
   return (
     <>
       <Routes>
@@ -29,10 +33,14 @@ function App() {
             path="/login"
             element={!user ? <Login /> : <Navigate to="/" />}
           />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/account" element={user? <Account />: <Navigate to="/login"/>} />
-          <Route path="/about" element={<About />}/>
-          <Route path="*" element={<NotFound />}/>
+          <Route path="contact" element={<Contact />} />
+          <Route
+            path="account"
+            element={user ? <Account /> : <Navigate to="/login" />}
+          />
+          <Route path="about" element={<About />} />
+          <Route path="products/:productId" element={<ProductDetails />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
       <Toaster />

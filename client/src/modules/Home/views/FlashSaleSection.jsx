@@ -2,20 +2,21 @@ import React, { useEffect, useState } from "react";
 import { MoveRight, MoveLeft } from "lucide-react";
 import Cart from "../components/Cart";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation } from "swiper/modules";
 import { useRef } from "react";
-import { products } from "../../../components/data";
+
 
 import "swiper/css";
 import "swiper/css/navigation";
 import Button from "../../../components/ui/Button";
-
+import { fetchFlashProduct } from "../../../redux/slices/productSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const FlashSaleSection = () => {
   const swiperRef = useRef(null);
+  const { flashSaleProducts } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
 
-
-  
   const [saleTime, setSaleTime] = useState(60 * 60 * 24 * 4);
   const days = Math.floor(saleTime / (60 * 60 * 24));
   const hours = Math.floor((saleTime % (60 * 60 * 24)) / (60 * 60));
@@ -25,12 +26,20 @@ const FlashSaleSection = () => {
   useEffect(() => {
     if (saleTime <= 0) return;
     const timer = setInterval(() => setSaleTime((prev) => prev - 1), 1000);
-    console.log("Render ");
 
     return () => {
       clearInterval(timer);
     };
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchFlashProduct());
+    
+    
+  }, []);
+
+  
+  
 
   return (
     <section className="container mx-auto px-4 mt-40">
@@ -94,29 +103,30 @@ const FlashSaleSection = () => {
             1024: { slidesPerView: 6 },
           }}
         >
-          {products.map((product) => (
-            <SwiperSlide>
+          {flashSaleProducts?.map((product) => (
+            <SwiperSlide key={product?._id}>
+              
               <Cart
-              key={product.id}
-                url={product.url}
+                key={product._id}
+                url={ product?.images?.[0]?.url}
                 price={product.price}
                 discount={product.discount}
-                alt={product.name}
+                alt={product?.images?.[0]?.alt}
                 name={product.name}
                 ratings={product.ratings}
                 reviews={product.reviews}
+                id={product._id}
               />
+            
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
 
       <div className="flex justify-center">
-        <Button
-        className="mb-12"
-        >
-        <a href="/products">View All Products</a>
-      </Button>
+        <Button className="mb-12">
+          <a href="/products">View All Products</a>
+        </Button>
       </div>
       <div className="border-b border-gray-300 container mx-auto mb-4"></div>
     </section>

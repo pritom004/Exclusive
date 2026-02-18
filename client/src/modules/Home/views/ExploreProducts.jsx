@@ -1,10 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Button from '../../../components/ui/Button';
-import { products } from '../../../components/data';
 import Cart from '../components/Cart';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchExploreProducts } from '../../../redux/slices/productSlice';
 
 
 const ExploreProducts = () => {
+
+   const {exploreProducts} = useSelector(state => state.product)
+  const dispatch = useDispatch()
+
+  useEffect(() => { 
+    dispatch(fetchExploreProducts())
+  }, [])
+
+
   return (
     <section className="container mx-auto px-4 my-20">
          <div className="flex gap-x-4 items-center mb-9">
@@ -18,16 +28,18 @@ const ExploreProducts = () => {
         </h4>
         
         <nav className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-20 gap-y-6'>
-        {products && products.map((product) => (
-            <Cart key={product.id}
-                 url={product.url}
+        {exploreProducts && exploreProducts?.map((product) => (
+             <Cart
+                key={product.id}
+                url={ product?.images?.[0]?.url}
                 price={product.price}
                 discount={product.discount}
-                alt={product.name}
+                alt={product?.images?.[0]?.alt}
                 name={product.name}
                 ratings={product.ratings}
                 reviews={product.reviews}
-            />
+                id={product._id}
+              />
         ))}
         </nav>
        <div className='flex justify-center py-12'>

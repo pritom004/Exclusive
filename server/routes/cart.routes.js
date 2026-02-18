@@ -3,11 +3,6 @@ import express from "express";
 
 const router = express.Router()
 
-// router.post("/");
-// router.get("/cart");
-// router.put("/:id");
-// router.delete("/:id");
-
-
+router.post("/add", addToCart)
 
 export default router;
