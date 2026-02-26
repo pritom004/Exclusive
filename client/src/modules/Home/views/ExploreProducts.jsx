@@ -30,7 +30,7 @@ const ExploreProducts = () => {
         <nav className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-20 gap-y-6'>
         {exploreProducts && exploreProducts?.map((product) => (
              <Cart
-                key={product.id}
+                key={product._id}
                 url={ product?.images?.[0]?.url}
                 price={product.price}
                 discount={product.discount}
@@ -39,6 +39,8 @@ const ExploreProducts = () => {
                 ratings={product.ratings}
                 reviews={product.reviews}
                 id={product._id}
+                  color={product.colors[0]}
+                size={product.sizes[0]}
               />
         ))}
         </nav>

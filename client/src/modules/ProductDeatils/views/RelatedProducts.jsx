@@ -11,7 +11,7 @@ const RelatedProducts = (category) => {
     if (category) {
       dispatch(fetchRelatedProducts(category.category));
     }
-  }, [dispatch, category]);
+  }, []);
 
   
 
@@ -35,6 +35,8 @@ const RelatedProducts = (category) => {
               ratings={product.ratings}
               reviews={product.reviews}
               id={product._id}
+                color={product.colors[0]}
+                size={product.sizes[0]}
             />
           ))}
       </div>

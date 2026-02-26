@@ -20,8 +20,6 @@ const ProductDetails = () => {
     quantity: 0,
   });
 
-  
-
   useEffect(() => {
     if (productId) {
       dispatch(fetchProductDetails(productId));
@@ -38,6 +36,19 @@ const ProductDetails = () => {
     return <NotFound />;
   }
 
+  function getStarCounts(ratings) {
+    let avgRatings =
+      ratings.reduce((acc, curr) => (acc += curr.rating), 0) / ratings.length ||
+      0;
+
+    let full = Math.floor(avgRatings);
+    let half = avgRatings - full > 0 ? 1 : 0;
+    let empty = Math.floor(5 - avgRatings);
+
+    return { full, half, empty };
+  }
+
+  const { full, half, empty } = getStarCounts(selectedProduct.ratings);
 
 
   return (
@@ -49,7 +60,7 @@ const ProductDetails = () => {
           {selectedProduct.name}
         </Link>
       </h4>
-
+      
       <div className="flex flex-wrap gap-x-32 gap-y-10">
         <nav id="images&image" className="flex gap-10">
           <ul className="space-y-5">
@@ -75,14 +86,33 @@ const ProductDetails = () => {
             src={selectedImage}
             alt={selectedProduct.name}
           />
+          
         </nav>
         <nav className="space-y-4 grow">
           <h5 className="text-3xl font-semibold">{selectedProduct.name}</h5>
 
-          {/* <div>
-            {selectedProduct?.ratings?.length > 0 &&
-}
-          </div> */}
+     <div className="flex gap-3 items-center">
+      <div className="flex gap-x-1">
+        {full > 0 && Array.from({ length: full }).map((_, i) => (
+          <FaStar key={`full-${i}`} className="size-4 text-yellow-400" />
+        ))}
+
+        {half > 0 &&
+          Array.from({ length: half }).map((_, i) => (
+            <FaStarHalf key={`half-${i}`} className="size-4 text-yellow-400" />
+          ))}
+        {Array.from({ length: empty }).map((_, i) => (
+          <FaStar key={`empty-${i}`} className="size-4 text-gray-300" />
+        ))}
+      </div>
+      <span className="inline-block text-gray-500">
+        ({selectedProduct.ratings.length} Reviews)
+      </span>
+<span className="text-gray-500">|</span>
+      {selectedProduct.quantity <= 0 && <span className="text-red-600/60">Out of Stock</span>}
+      {selectedProduct.quantity > 0 && selectedProduct.quantity <= 30 && <span className="text-yellow-600/60">Low Stock</span>}
+      {selectedProduct.quantity > 30 && <span className="text-green-600/60">In Stock</span>}
+     </div>
 
           <h6 className="text-2xl">${selectedProduct.price}</h6>
 
@@ -126,15 +156,17 @@ const ProductDetails = () => {
           <div className="flex gap-4">
             <nav className="flex border rounded">
               <button
-              disabled={selectedDetails.quantity < 1}
-               onClick={() =>
+                disabled={selectedDetails.quantity < 1}
+                onClick={() =>
                   setSelectedDetails((prev) => ({
                     ...prev,
                     quantity: prev.quantity - 1,
                   }))
                 }
-              
-              className="border-r p-1.5 rounded-l">-</button>
+                className="border-r p-1.5 rounded-l"
+              >
+                -
+              </button>
               <span className="inline-block px-5.5 text-xl py-1">
                 {selectedDetails.quantity}
               </span>
@@ -150,39 +182,41 @@ const ProductDetails = () => {
                 +
               </button>
             </nav>
-            <button
-            className="text-white py-1 px-8 rounded border border-gray-100 bg-red-600/80 cursor-pointer">
+            <button className="text-white py-1 px-8 rounded border border-gray-100 bg-red-600/80 cursor-pointer">
               Buy Now
             </button>
-            <button className="p-1 rounded border border-gray-400"><CiHeart className="size-6"/></button>
+            <button className="p-1 rounded border border-gray-400">
+              <CiHeart className="size-6" />
+            </button>
           </div>
 
-            <div className="max-w-xl rounded border border-gray-400">
-                <div className="flex items-center gap-4 px-3 py-4">
-                <FaTruckFast className="size-8.5"/>
-                    <div className="space-y-4">
-                        <p className="text-lg">Free Delivery</p>
-                        <p className="text-sm underline">Enter your postal code for Delivery Availability</p>
-                    </div>
-                </div>
-                <div className="w-full border-b border-gray-400"></div>
-
-
-                 <div className="flex items-center gap-4 px-3 py-6">
-                <PiRecycleBold className="size-8.5"/>
-                    <div className="space-y-4">
-                        <p className="text-lg">Return Delivery</p>
-                        <p className="text-sm ">
-                            Free 30 Days Returns. <span className="underline">Details</span>
-                        </p>
-                    </div>
-                </div>
+          <div className="max-w-xl rounded border border-gray-400">
+            <div className="flex items-center gap-4 px-3 py-4">
+              <FaTruckFast className="size-8.5" />
+              <div className="space-y-4">
+                <p className="text-lg">Free Delivery</p>
+                <p className="text-sm underline">
+                  Enter your postal code for Delivery Availability
+                </p>
+              </div>
             </div>
+            <div className="w-full border-b border-gray-400"></div>
 
+            <div className="flex items-center gap-4 px-3 py-6">
+              <PiRecycleBold className="size-8.5" />
+              <div className="space-y-4">
+                <p className="text-lg">Return Delivery</p>
+                <p className="text-sm ">
+                  Free 30 Days Returns.{" "}
+                  <span className="underline">Details</span>
+                </p>
+              </div>
+            </div>
+          </div>
         </nav>
       </div>
 
-      <RelatedProducts category={selectedProduct.category}/>
+      <RelatedProducts category={selectedProduct.category} />
     </div>
   );
 };

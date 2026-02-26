@@ -3,6 +3,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 import toast from "react-hot-toast";
 
+
+const getGuestId = localStorage.getItem("guest_id") || `guest_${Date.now()}`;
+
+localStorage.setItem("guest_id", getGuestId);
+
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
@@ -68,6 +73,7 @@ const initialState = {
   error: null,
   token: null,
   user: null,
+  guestId: getGuestId,
   isAuthenticated: false
 };
 const authSlice = createSlice({
@@ -104,10 +110,18 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.loading = false
       })
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.data;
         toast.success("User logged in successfully!")
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        toast.error(action.payload.message)
       })
       .addCase(getAccessToken.fulfilled, (state, action) => {
         state.token = action.payload;

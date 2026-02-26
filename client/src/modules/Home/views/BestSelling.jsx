@@ -34,7 +34,7 @@ const BestSelling = () => {
 <div className="flex flex-wrap justify-between">
     {bestSellingProducts?.map((product) => (
          <Cart
-                key={product.id}
+                key={product._id}
                 url={ product?.images?.[0]?.url}
                 price={product.price}
                 discount={product.discount}
@@ -43,6 +43,8 @@ const BestSelling = () => {
                 ratings={product.ratings}
                 reviews={product.reviews}
                 id={product._id}
+                color={product.colors[0]}
+                size={product.sizes[0]}
               />
     ))}
 </div>

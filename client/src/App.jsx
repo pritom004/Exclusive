@@ -12,6 +12,8 @@ import Account from "./pages/Account";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import ProductDetails from "./pages/ProductDetails";
+import CartDetails from "./pages/CartDetails";
+import Checkout from "./pages/Checkout";
 
 function App() {
   const { loading, user } = useSelector((state) => state.auth);
@@ -41,6 +43,8 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="products/:productId" element={<ProductDetails />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="cart" element={user? <CartDetails /> : <Navigate to="/login" />} />
+          <Route path="checkout" element={user? <Checkout /> : <Navigate to="/login" />} />
         </Route>
       </Routes>
       <Toaster />

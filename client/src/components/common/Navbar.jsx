@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router";
 import { Search, User, ShoppingCart } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { User2, ShoppingBag, CircleX, Star, LogOut } from "lucide-react";
-import { logoutUser } from "../../redux/slices/authslice";
+import { logoutUser } from "../../redux/slices/authSlice";
+import { fetchCart } from "../../redux/slices/cartSlice";
 
 
 
@@ -36,12 +37,18 @@ import { logoutUser } from "../../redux/slices/authslice";
 
 const Navbar = () => {
   const [isActive, setIsActive] = useState(false);
-  const { user } = useSelector((state) => state.auth);
+  const { user, guestId } = useSelector((state) => state.auth);
+  const {cart} = useSelector(state => state.cart);
   const dispatch = useDispatch();
 
   const handleLogout = () => {
     dispatch(logoutUser())
   }
+
+  useEffect(() => {
+    let query = user ? { userId: user._id } : { guestId };
+    dispatch(fetchCart(query))
+  }, [])
 
 
   return (
@@ -97,9 +104,10 @@ const Navbar = () => {
           />
           <Search />
         </div>
-        <button>
+        <Link to="/cart" className="relative">
+          {cart && cart.items?.length > 0 && (<span className="absolute -right-2.5 -top-2.5 text-center text-white bg-red-500 size-5 rounded-full text-sm" >{cart.items?.length}</span>)}
           <ShoppingCart />
-        </button>
+        </Link>
         {user && (
           <div className="relative">
             <button className={`${isActive? "bg-red-600 p-0.5 text-white rounded-full" : ""} duration-300`} onClick={() => setIsActive(!isActive)}>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Input from "../../../components/common/Input";
 import Button from "../../../components/ui/Button";
 import { useDispatch } from "react-redux";
-import { updateProfile } from "../../../redux/slices/authslice";
+import { updateProfile } from "../../../redux/slices/authSlice";
 import toast from "react-hot-toast";
 
 const EditProfile = ({ user }) => {

@@ -38,8 +38,7 @@ const FlashSaleSection = () => {
     
   }, []);
 
-  
-  
+
 
   return (
     <section className="container mx-auto px-4 mt-40">
@@ -116,6 +115,8 @@ const FlashSaleSection = () => {
                 ratings={product.ratings}
                 reviews={product.reviews}
                 id={product._id}
+                  color={product?.colors[0]}
+                size={product?.sizes[0]}
               />
             
             </SwiperSlide>
