@@ -5,10 +5,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchCheckout } from "../redux/slices/checkoutSlice";
 import Button from "../components/ui/Button";
 import ApplyCoupon from "../components/common/ApplyCoupon";
+import { stripePromise } from "../utils/loadStripe";
+import {Elements} from '@stripe/react-stripe-js';
+import CheckoutForm from "../modules/Checkout/components/CheckoutForm";
 
 const Checkout = () => {
   const dispatch = useDispatch();
-  const { checkout } = useSelector((state) => state.checkout);
+  const { checkout, clientSecret } = useSelector((state) => state.checkout);
 
   useEffect(() => {
     dispatch(fetchCheckout);
@@ -38,8 +41,10 @@ const Checkout = () => {
       <h2 className="tracking-wide text-black text-[2.5rem] font-semibold mb-8">
         Billing Details
       </h2>
-      <main className="flex grow my-6 flex-wrap gap-y-6 gap-x-10 justify-between ">
-        <nav className="grow max-w-xl space-y-6">
+      <form className="flex grow my-6 flex-wrap gap-y-6 gap-x-10 justify-between ">
+        {clientSecret? <Elements stripe={stripePromise} options={{clientSecret}}>
+          <CheckoutForm />
+        </Elements>: (<nav className="grow max-w-xl space-y-6">
           <div>
             <label
               htmlFor="firstName"
@@ -113,7 +118,7 @@ const Checkout = () => {
               Save this information for faster check-out next time
             </p>
           </div>
-        </nav>
+        </nav>)}
 
         <nav className="sm:min-w-sm mt-8 md:min-w-md">
           <div>
@@ -144,7 +149,7 @@ const Checkout = () => {
           <div className="mb-8">
             <div className="w-full items-center flex justify-between text-lg mb-2.5">
               <span>Subtotal:</span>
-              <span>${checkout?.totalPrice}</span>
+              <span>${checkout?.totalPrice.toFixed(2)}</span>
             </div>
 
             <div className="border-b mb-2.5 w-full border-gray-500"></div>
@@ -158,7 +163,7 @@ const Checkout = () => {
 
             <div className="w-full items-center flex justify-between text-lg mb-2.5">
               <span>Total:</span>
-              <span>${checkout?.totalPrice}</span>
+              <span>${checkout?.totalPrice.toFixed(2)}</span>
             </div>
           </div>
 
@@ -174,7 +179,7 @@ const Checkout = () => {
 
           <Button>Place Order</Button>
         </nav>
-      </main>
+      </form>
     </div>
   );
 };

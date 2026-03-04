@@ -16,7 +16,8 @@ export const fetchCheckout = createAsyncThunk("checkout/fetchCheckout", async() 
 const checkoutSlice = createSlice({
     name: "checkout",
     initialState: {
-        checkout: null
+        checkout: null,
+        clientSecret: null
     },
     extraReducers: (builder) => {
         builder.addCase(createCheckout.fulfilled, (state, action) => {
