@@ -12,6 +12,8 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import cartRoutes from "./routes/cart.routes.js"
+import checkoutRoutes from "./routes/checkout.routes.js";
+
 
 const app = express();
 
@@ -29,7 +31,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes)
 app.use("/api/product", productRoutes)
 app.use("/api/items", cartRoutes)
-
+app.use("/api/checkout", checkoutRoutes)
 
 
 connectDB().then(() => {

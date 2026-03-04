@@ -39,6 +39,7 @@ const Navbar = () => {
   const [isActive, setIsActive] = useState(false);
   const { user, guestId } = useSelector((state) => state.auth);
   const {cart} = useSelector(state => state.cart);
+  const {checkout} = useSelector(state=> state.checkout);
   const dispatch = useDispatch();
 
   const handleLogout = () => {
@@ -48,7 +49,7 @@ const Navbar = () => {
   useEffect(() => {
     let query = user ? { userId: user._id } : { guestId };
     dispatch(fetchCart(query))
-  }, [])
+  }, [checkout])
 
 
   return (

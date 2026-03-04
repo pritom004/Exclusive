@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import Cart from "../models/cart.model.js";
 import {
   changePassword,
   createAccessToken,
@@ -6,9 +7,11 @@ import {
   signToken,
   verifyToken,
 } from "../services/auth.service.js";
+import { createCart } from "../services/cart.service.js";
 
 export const signup = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, redirect } = req.body;
+
   try {
     if (!name || !email || !password) {
       res.status(400).json({
@@ -26,12 +29,14 @@ export const signup = async (req, res) => {
     res.status(500).json({
       message: "Error signing up",
       error: error.message,
+      redirect,
     });
   }
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, guestId } = req.body;
+  console.log(guestId);
 
   try {
     const user = await loginUser(email, password);
@@ -47,6 +52,18 @@ export const login = async (req, res) => {
 
     user.refreshToken = token;
     await user.save();
+
+    if (guestId) {
+      const guestCart = await Cart.findOne({ guestId });
+      if (guestCart) {
+        const cart = await createCart(user._id, null);
+        cart.items = guestCart.items;
+        cart.totalPrice = guestCart.totalPrice;
+        cart.guestId = null;
+        await cart.save();
+        await Cart.deleteOne({guestId})
+      }
+    }
 
     return res.status(200).json({
       data: user,
@@ -153,7 +170,7 @@ export const updateProfile = async (req, res) => {
               role: changedPassword.role,
               isVerified: changedPassword.isVerified,
               address: changedPassword.address,
-            }
+            },
           });
         }
       } else {
@@ -167,12 +184,11 @@ export const updateProfile = async (req, res) => {
       name: fullName,
       email,
       address: address || "",
-    }).select("-password -refreshToken")
-    
+    }).select("-password -refreshToken");
 
     return res.status(200).json({
       message: "Profile updated successfully",
-      data: updatedProfile
+      data: updatedProfile,
     });
   } catch (error) {
     return res.status(500).json({

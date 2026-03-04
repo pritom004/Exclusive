@@ -42,7 +42,11 @@ const cartSlice = createSlice({
     loading: false,
     error: null
   },
-
+  reducers: {
+    setQuantity: (state, action) => {
+      state.cart
+    } 
+  },
   extraReducers: (builder) => {
     builder
     .addCase(addToCart.pending, (state) => {

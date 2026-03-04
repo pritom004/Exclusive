@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../redux/slices/authslice";
+import { loginUser } from "../redux/slices/authSlice";
 
 const Login = () => {
 
-  const { loading} = useSelector(state => state.auth)
+  const { loading, guestId} = useSelector(state => state.auth)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch()
 
 
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true)
     
     const formData = new FormData(e.target);
 
-    dispatch(loginUser({email: formData.get('email'), password: formData.get('password')}))
+    dispatch(loginUser({email: formData.get('email'), password: formData.get('password'), guestId}))
 
     e.target.reset()
     setIsSubmitting(false)

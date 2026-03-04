@@ -25,6 +25,7 @@ export const loginUser = createAsyncThunk("auth/loginUser", async (userData, {re
     try {
         const response = await api.post("/api/auth/login", userData)
 
+    
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response?.data || error.message);
@@ -74,7 +75,7 @@ const initialState = {
   token: null,
   user: null,
   guestId: getGuestId,
-  isAuthenticated: false
+  isAuthenticated: false,
 };
 const authSlice = createSlice({
   name: "auth",
@@ -125,12 +126,13 @@ const authSlice = createSlice({
       })
       .addCase(getAccessToken.fulfilled, (state, action) => {
         state.token = action.payload;
+        
         state.loading = false
       })
       .addCase(logoutUser.fulfilled, (state, action) => {
-          state.loading = false
-          state.user = null
-          state.error = null
+          state.loading = false;
+          state.user = null;
+          state.error = null;
           toast.success(action.payload.message)
       })
       .addCase(updateProfile.fulfilled, (state, action) => {

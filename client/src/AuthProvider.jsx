@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
     getToken();
   }, []);
 
+  //Set Token as header in every route
   useEffect(() => {
     const authInterceptor = api.interceptors.request.use((config) => {
       // If we have a token and it's not a retry, add it to headers [4, 6]
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }) => {
     return () => api.interceptors.request.eject(authInterceptor);
   }, [token]);
 
+  // Handle token expire, fetch new token
   useEffect(() => {
     const refreshInterceptor = api.interceptors.response.use(
       (response) => response,

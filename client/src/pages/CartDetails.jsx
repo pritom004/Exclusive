@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCart, removeItem, updateItem } from "../redux/slices/cartSlice";
 import Button from "../components/ui/Button";
 import { MdOutlineCancel } from "react-icons/md";
-import { useState } from "react";
+import { createCheckout } from "../redux/slices/checkoutSlice";
+import ApplyCoupon from "../components/common/ApplyCoupon";
+
 
 const CartDetails = () => {
   const dispatch = useDispatch();
@@ -41,14 +43,21 @@ const CartDetails = () => {
         productId,
         quantity: e.target.value,
         ...query,
-      }))
+      }));
+
+
   }
 
 
   const handleCheckout = () => {
     if(!user){
-      navigate("/login?redirect=checkout")
-    }    
+      navigate("/login?redirect=cart")
+    }else{
+      dispatch(createCheckout(cart._id))
+      navigate("/checkout")
+    }
+
+    
   }
 
 
@@ -105,14 +114,7 @@ const CartDetails = () => {
         </Link>
 
         <div className="mt-20 flex-wrap flex gap-4 items-start justify-between">
-          <div className="flex gap-x-4 items-center">
-            <input
-              type="text"
-              className="border rounded px-4 md:px-5 py-2 md:py-2.5 outline-none"
-              placeholder="Coupon Code"
-            />
-            <Button>Apply Coupon</Button>
-          </div>
+          <ApplyCoupon />
 
           <div className="max-w-sm grow px-3.5 py-6 border-2 rounded border-black">
             <h6 className="text-xl font-semibold mb-6">Cart Total</h6>

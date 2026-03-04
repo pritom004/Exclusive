@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const cartItemSchema = new mongoose.Schema(
+const checkoutItems = new mongoose.Schema(
   {
     productId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -30,27 +30,22 @@ const cartItemSchema = new mongoose.Schema(
   { _id: false },
 );
 
-const cartSchema = new mongoose.Schema(
-  {
+const checkoutSchema = new mongoose.Schema({
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      unique: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
     },
-    guestId: String,
     totalPrice: {
-      type: Number,
-      default: 0,
+        type: Number,
+        default: 0
     },
     shippingCost: {
         type: Number,
         default: 0
     },
-    items: [cartItemSchema],
-  },
-  { timestamps: true },
-);
+    items: [checkoutItems]
+}, {timestamps: true});
 
-const Cart = mongoose.model("Cart", cartSchema);
-
-export default Cart;
+const Checkout = mongoose.model("Checkout", checkoutSchema);
+export default Checkout;
