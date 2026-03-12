@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router";
+import { Routes, Route, useNavigate, useLocation } from "react-router";
 import { Toaster } from "react-hot-toast";
 import { Navigate } from "react-router";
 
@@ -14,15 +14,19 @@ import NotFound from "./pages/NotFound";
 import ProductDetails from "./pages/ProductDetails";
 import CartDetails from "./pages/CartDetails";
 import Checkout from "./pages/Checkout";
+import Products from "./pages/Products";
+
 
 function App() {
-  const { loading, user } = useSelector((state) => state.auth);
+  const {  user, isAuthenticating } = useSelector((state) => state.auth);
+  const location = useLocation();  
   const query = new URLSearchParams(location.search);
   const redirect = query.get("redirect");
 
-  if (loading) {
+  if (isAuthenticating) {
     return <div>Loading...</div>;
   }
+
 
   return (
     <>
@@ -58,6 +62,7 @@ function App() {
             path="checkout"
             element={user ? <Checkout /> : <Navigate to="/login" />}
           />
+          <Route path="products" element={<Products />}/>
         </Route>
       </Routes>
       <Toaster />

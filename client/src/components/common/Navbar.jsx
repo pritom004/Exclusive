@@ -6,51 +6,52 @@ import { User2, ShoppingBag, CircleX, Star, LogOut } from "lucide-react";
 import { logoutUser } from "../../redux/slices/authSlice";
 import { fetchCart } from "../../redux/slices/cartSlice";
 
-
-
-  const options = [
-    {
-      id: 1,
-      title: "Manage My Account",
-      icon: User2,
-      href: "/account",
-    },
-    {
-      id: 2,
-      title: "My Orders",
-      icon: ShoppingBag,
-      href: "/account",
-    },
-    {
-      id: 3,
-      title: "My Cancellations",
-      icon: CircleX,
-      href: "/account",
-    },
-    {
-      id: 4,
-      title: "My Reviews",
-      icon: Star,
-      href: "/account",
-    },
-  ];
+const options = [
+  {
+    id: 1,
+    title: "Manage My Account",
+    icon: User2,
+    href: "/account",
+  },
+  {
+    id: 2,
+    title: "My Orders",
+    icon: ShoppingBag,
+    href: "/account",
+  },
+  {
+    id: 3,
+    title: "My Cancellations",
+    icon: CircleX,
+    href: "/account",
+  },
+  {
+    id: 4,
+    title: "My Reviews",
+    icon: Star,
+    href: "/account",
+  },
+];
 
 const Navbar = () => {
   const [isActive, setIsActive] = useState(false);
   const { user, guestId } = useSelector((state) => state.auth);
-  const {cart} = useSelector(state => state.cart);
-  const {checkout} = useSelector(state=> state.checkout);
+  const { cart } = useSelector((state) => state.cart);
+  const { checkout } = useSelector((state) => state.checkout);
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    dispatch(logoutUser())
+    dispatch(logoutUser());
+  };
+
+  const handleSearch = () => {
+    
   }
 
   useEffect(() => {
     let query = user ? { userId: user._id } : { guestId };
-    dispatch(fetchCart(query))
-  }, [checkout])
-
+    dispatch(fetchCart(query));
+  }, [checkout]);
 
   return (
     <div className="container gap-y-1 mx-auto p-4 flex flex-col lg:flex-row justify-between">
@@ -69,19 +70,24 @@ const Navbar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink 
-          to="/contact"
-          className={({ isActive }) => {
+          <NavLink
+            to="/contact"
+            className={({ isActive }) => {
               return isActive ? "underline" : "";
             }}
-          >Contact</NavLink>
+          >
+            Contact
+          </NavLink>
         </li>
         <li>
           <NavLink
-           className={({ isActive }) => {
+            className={({ isActive }) => {
               return isActive ? "underline" : "";
             }}
-          to="/about">About</NavLink>
+            to="/about"
+          >
+            About
+          </NavLink>
         </li>
         {!user && (
           <li>
@@ -106,14 +112,23 @@ const Navbar = () => {
           <Search />
         </div>
         <Link to="/cart" className="relative">
-          {cart && cart.items?.length > 0 && (<span className="absolute -right-2.5 -top-2.5 text-center text-white bg-red-500 size-5 rounded-full text-sm" >{cart.items?.length}</span>)}
+          {cart && cart.items?.length > 0 && (
+            <span className="absolute -right-2.5 -top-2.5 text-center text-white bg-red-500 size-5 rounded-full text-sm">
+              {cart.items?.length}
+            </span>
+          )}
           <ShoppingCart />
         </Link>
         {user && (
           <div className="relative">
-            <button className={`${isActive? "bg-red-600 p-0.5 text-white rounded-full" : ""} duration-300`} onClick={() => setIsActive(!isActive)}>
+            <button
+              className={`${isActive ? "bg-red-600 p-0.5 text-white rounded-full" : ""} duration-300`}
+              onClick={() => setIsActive(!isActive)}
+            >
               <User />
-              <nav className={`absolute z-50 duration-300 space-y-4 bg-black/47 text-white p-4 top-7.5 right-0 xl:-right-54 ${isActive? "": "hidden"}`}>
+              <nav
+                className={`absolute z-50 duration-300 space-y-4 bg-black/47 text-white p-4 top-7.5 right-0 xl:-right-54 ${isActive ? "" : "hidden"}`}
+              >
                 {options.map((option) => (
                   <Link
                     className="flex justify-baseline gap-2 min-w-52"
@@ -125,13 +140,13 @@ const Navbar = () => {
                   </Link>
                 ))}
 
-                 <span
-                    className="flex justify-baseline gap-2 min-w-52"
-                    onClick={handleLogout}
-                  >
-                    <LogOut />
-                    Logout
-                  </span>
+                <span
+                  className="flex justify-baseline gap-2 min-w-52"
+                  onClick={handleLogout}
+                >
+                  <LogOut />
+                  Logout
+                </span>
               </nav>
             </button>
           </div>

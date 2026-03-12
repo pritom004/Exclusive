@@ -13,11 +13,23 @@ export const products = async (req, res) => {
       category,
     } = req.query;
 
+console.log({
+      sort,
+      limit,
+      minPrice,
+      maxPrice,
+      status,
+      color,
+      size,
+      isNew,
+      category,
+    });
+
     const filter = {};
 
     if (category) {
       //e.g. find({category: 'electronics'})
-      filter.category = category;
+      filter.category = category === "all"? "" : category;
     }
 
     // Price filter
@@ -29,11 +41,7 @@ export const products = async (req, res) => {
     }
 
     // Status filter
-    if (status) {
-      //e.g. find({status: 'stock_out'})
-      filter.status = status; 
-    }
-
+  
     // Color filter
     if (color) {
       //e.g. find({status: 'stock_out'})
@@ -42,7 +50,7 @@ export const products = async (req, res) => {
 
     // Size filter
     if (size) {
-      filter.sizes = size; // matches array
+      filter.sizes.$in = size; // matches array
     }
 
     // New products (last 7 days)
@@ -54,6 +62,9 @@ export const products = async (req, res) => {
 
     // Sorting
     let sortOption = {};
+
+    
+    
 
     let useRatingSort = false;
     const applySort = (s) => {
@@ -71,11 +82,12 @@ export const products = async (req, res) => {
     }
 
     // block invalid combination
-if (useRatingSort && Array.isArray(sort) && sort.length > 1) {
-  return res.status(400).json({
-    message: "rating_desc cannot be combined with other sorts",
-  });
-}
+    if (useRatingSort && Array.isArray(sort) && sort.length > 1) {
+      return res.status(400).json({
+        message: "rating_desc cannot be combined with other sorts",
+      });
+    }
+console.log(filter);
 
     // If sorting by rating, we must use aggregation
     if (useRatingSort) {
@@ -96,6 +108,9 @@ if (useRatingSort && Array.isArray(sort) && sort.length > 1) {
     const products = await Product.find(filter)
       .sort(sortOption)
       .limit(Number(limit));
+
+      console.log(products);
+      
 
     res.json(products);
   } catch (error) {

@@ -1,21 +1,23 @@
 import { useEffect } from "react";
 import api from "./api/axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setToken, getUser } from "./redux/slices/authSlice";
+import { setToken, getUser, setIsAuthenticating} from "./redux/slices/authSlice";
 export const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
 
+  
   //Fetch Token and Than user
   useEffect(() => {
+
     async function getToken() {
       try {
         const res = await api.get("api/auth/access-token");
-        setToken(res.data.accessToken);
+        dispatch(setToken(res.data.accessToken));
         dispatch(getUser(res.data.accessToken));
       } catch (error) {
-        setToken(null);
-      }
+        dispatch(setToken(null));
+        dispatch(setIsAuthenticating(false));      }
     }
     getToken();
   }, []);

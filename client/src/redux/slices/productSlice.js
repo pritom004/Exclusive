@@ -33,8 +33,8 @@ export const fetchExploreProducts = createAsyncThunk(
 
 export const fetchAllProducts = createAsyncThunk(
   "productSlice/fetchAllProducts",
-  async () => {
-    const response = await api.get("/api/product/products");
+  async (params) => {
+    const response = await api.get("/api/product/products", {params});
     return response.data;
   },
 );
@@ -56,6 +56,7 @@ export const fetchRelatedProducts = createAsyncThunk(
     return response.data;
   },
 );
+
 
 const productSlice = createSlice({
   name: "products",

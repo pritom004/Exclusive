@@ -9,7 +9,7 @@ const ApplyCoupon = ({className}) => {
               className="border rounded px-4 md:px-5 py-2 md:py-2.5 outline-none"
               placeholder="Coupon Code"
             />
-            <Button>Apply Coupon</Button>
+            <Button type="button">Apply Coupon</Button>
     </div>
   )
 }

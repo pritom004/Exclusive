@@ -13,9 +13,10 @@ import authRoutes from "./routes/auth.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import cartRoutes from "./routes/cart.routes.js"
 import checkoutRoutes from "./routes/checkout.routes.js";
-
+import orderRoutes from "./routes/order.routes.js";
 
 const app = express();
+
 
 
 //Middlewares
@@ -32,6 +33,7 @@ app.use("/api/auth", authRoutes)
 app.use("/api/product", productRoutes)
 app.use("/api/items", cartRoutes)
 app.use("/api/checkout", checkoutRoutes)
+app.use("/api/order", orderRoutes)
 
 
 connectDB().then(() => {
@@ -44,3 +46,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`http://localhost:${PORT}/`);
 })
+
+

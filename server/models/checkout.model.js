@@ -12,10 +12,10 @@ const checkoutItems = new mongoose.Schema(
       default: 0,
     },
     name: String,
-     image: {
-    url: String,
-    alt: String,
-  },
+    image: {
+      url: String,
+      alt: String,
+    },
     size: String,
     color: String,
     price: {
@@ -30,22 +30,25 @@ const checkoutItems = new mongoose.Schema(
   { _id: false },
 );
 
-const checkoutSchema = new mongoose.Schema({
+const checkoutSchema = new mongoose.Schema(
+  {
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     totalPrice: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     shippingCost: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
-    items: [checkoutItems]
-}, {timestamps: true});
+    items: [checkoutItems],
+  },
+  { timestamps: true },
+);
 
 const Checkout = mongoose.model("Checkout", checkoutSchema);
 export default Checkout;

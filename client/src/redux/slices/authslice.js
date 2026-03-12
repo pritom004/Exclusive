@@ -75,7 +75,7 @@ const initialState = {
   token: null,
   user: null,
   guestId: getGuestId,
-  isAuthenticated: false,
+  isAuthenticating: true,
 };
 const authSlice = createSlice({
   name: "auth",
@@ -83,6 +83,9 @@ const authSlice = createSlice({
   reducers: {
     setToken: (state, token) => {
         state.token = token.payload;
+    },
+    setIsAuthenticating: (state, action) => {
+      state.isAuthenticating = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -101,15 +104,18 @@ const authSlice = createSlice({
         state.error = action.error;
       })
       .addCase(getUser.pending, (state) => {
-        state.loading = true;
+     
         state.error = false
       })
       .addCase(getUser.rejected, (state) => {
-        state.loading= false;
+        state.loading = false
+        state.isAuthenticating = false;
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload;
-        state.loading = false
+        state.loading = false;
+        state.isAuthenticating = false;
+
       })
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -150,5 +156,5 @@ const authSlice = createSlice({
 
 
 
-export const {setToken} = authSlice.actions
+export const {setToken, setIsAuthenticating} = authSlice.actions
 export default authSlice.reducer;
