@@ -57,6 +57,18 @@ export const fetchRelatedProducts = createAsyncThunk(
   },
 );
 
+const defaultFilters = {
+    sort: "newest",
+    limit: 6,
+    minPrice: 0,
+    maxPrice: 10000,
+    status: "all",
+    color: [],
+    size: [],
+    category: "All",
+    page: 1,
+    search: ""
+  };
 
 const productSlice = createSlice({
   name: "products",
@@ -68,17 +80,23 @@ const productSlice = createSlice({
     selectedProduct: null,
     relatedProducts: null,
     loading: false,
+    filter: defaultFilters
+  },
+  reducers: {
+    setFilter: (state, action) => {
+      state.filter = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchFlashProduct.fulfilled, (state, action) => {
-        state.flashSaleProducts = action.payload;
+        state.flashSaleProducts = action.payload.data;
       })
       .addCase(fetchBestSellingProducts.fulfilled, (state, action) => {
-        state.bestSellingProducts = action.payload;
+        state.bestSellingProducts = action.payload.data;
       })
       .addCase(fetchExploreProducts.fulfilled, (state, action) => {
-        state.exploreProducts = action.payload;
+        state.exploreProducts = action.payload.data;
       })
       .addCase(fetchAllProducts.fulfilled, (state, action) => {
         state.allProducts = action.payload;
@@ -86,9 +104,10 @@ const productSlice = createSlice({
       .addCase(fetchProductDetails.fulfilled, (state, action) => {
         state.selectedProduct = action.payload;
       }).addCase(fetchRelatedProducts.fulfilled, (state, action) => {
-        state.relatedProducts = action.payload;
+        state.relatedProducts = action.payload.data;
       })
   },
 });
 
+export const {setFilter} = productSlice.actions;
 export default productSlice.reducer;

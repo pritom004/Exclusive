@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useNavigate, useSearchParams } from "react-router";
 import { Search, User, ShoppingCart } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { User2, ShoppingBag, CircleX, Star, LogOut } from "lucide-react";
 import { logoutUser } from "../../redux/slices/authSlice";
 import { fetchCart } from "../../redux/slices/cartSlice";
+import { setFilter } from "../../redux/slices/productSlice";
 
 const options = [
   {
@@ -39,14 +40,31 @@ const Navbar = () => {
   const { cart } = useSelector((state) => state.cart);
   const { checkout } = useSelector((state) => state.checkout);
   const dispatch = useDispatch();
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+  const { filter } = useSelector((state) => state.product);
 
   const handleLogout = () => {
     dispatch(logoutUser());
   };
 
+  const [searchParams] = useSearchParams();
+
+
   const handleSearch = () => {
-    
-  }
+    if (!search) return;
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set("search", search);
+
+    dispatch(setFilter({...filter, search}))
+    navigate(`/products?${params.toString()}`);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
 
   useEffect(() => {
     let query = user ? { userId: user._id } : { guestId };
@@ -105,11 +123,15 @@ const Navbar = () => {
       <div className="flex gap-x-8 mx-auto items-center">
         <div className="flex gap-x-2 rounded-md bg-gray-100 px-4 py-1.5">
           <input
+            value={search}
+            onChange={handleSearchChange}
             placeholder="What are you looking for?"
             type="text"
             className="outline-none placeholder:text-gray-500 placeholder:text-xs"
           />
-          <Search />
+          <button onClick={handleSearch}>
+            <Search />
+          </button>
         </div>
         <Link to="/cart" className="relative">
           {cart && cart.items?.length > 0 && (

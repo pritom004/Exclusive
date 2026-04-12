@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import api from "./api/axios";
+import api from "../api/axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setToken, getUser, setIsAuthenticating} from "./redux/slices/authSlice";
+import { setToken, getUser, setIsAuthenticating} from "../redux/slices/authSlice";
 export const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);

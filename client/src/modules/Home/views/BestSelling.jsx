@@ -4,16 +4,15 @@ import Cart from "../components/Cart";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBestSellingProducts } from "../../../redux/slices/productSlice";
 
-
-
 const BestSelling = () => {
-  
-  const {bestSellingProducts} = useSelector(state => state.product)
-  const dispatch = useDispatch()
+  const { bestSellingProducts, loading } = useSelector(
+    (state) => state.product,
+  );
+  const dispatch = useDispatch();
 
-  useEffect(() => { 
-    dispatch(fetchBestSellingProducts())
-  }, [])
+  useEffect(() => {
+    dispatch(fetchBestSellingProducts());
+  }, []);
 
   return (
     <section className="container mx-auto px-4 my-20">
@@ -27,28 +26,28 @@ const BestSelling = () => {
           Best Selling Products
         </h4>
         <Button className="mb-12">
-            <a href="/products">View All</a>
+          <a href="/products">View All</a>
         </Button>
       </div>
 
-<div className="flex flex-wrap justify-between">
-    {bestSellingProducts?.map((product) => (
-         <Cart
-                key={product._id}
-                url={ product?.images?.[0]?.url}
-                price={product.price}
-                discount={product.discount}
-                alt={product?.images?.[0]?.alt}
-                name={product.name}
-                ratings={product.ratings}
-                reviews={product.reviews}
-                id={product._id}
-                color={product.colors[0]}
-                size={product.sizes[0]}
-              />
-    ))}
-</div>
-
+      <div className="flex flex-wrap justify-between">
+        {bestSellingProducts?.map((product) => (
+          <Cart
+            key={product._id}
+            url={product?.images?.[0]?.url}
+            price={product.price}
+            discount={product.discount}
+            alt={product?.images?.[0]?.alt}
+            name={product.name}
+            ratings={product.ratings}
+            reviews={product.reviews}
+            id={product._id}
+            color={product.colors[0]}
+            size={product.sizes[0]}
+            loading={loading}
+          />
+        ))}
+      </div>
     </section>
   );
 };

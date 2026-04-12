@@ -79,10 +79,10 @@ for (let i = 0; i < 100; i++) {
 const seedProducts = async () => {
   try {
     await Product.deleteMany();
-    console.log("Old products deleted");
+    
 
     await Product.insertMany(products);
-    console.log("100 products inserted successfully");
+  
 
     process.exit();
   } catch (error) {

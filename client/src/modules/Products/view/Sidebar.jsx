@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
-
+import { setFilter } from "../../../redux/slices/productSlice";
+import { useDispatch, useSelector } from "react-redux";
 const colors = ["red", "green", "blue", "white", "gray", "black"];
 
-const categories = ["all", "shoes", "shirt", "pant", "jens"];
+const categories = ["All", "Shoes", "Clothing", "Pant", "Jens"];
 
-const sizes = ["sm", "md", "lg", "xl", "xxl"];
+const sizes = ["S", "M", "L", "X", "XL"];
 
-const Sidebar = ({ filter, setFilter }) => {
+const Sidebar = () => {
   //Provide existing search params to state and URLSearchParams
   const [searchParams] = useSearchParams();
   //Used to modified it first and than change the search params
@@ -15,7 +16,8 @@ const Sidebar = ({ filter, setFilter }) => {
   //Used to navigate or add the search params
   const navigate = useNavigate();
 
-  
+  const {filter} = useSelector(state => state.product)
+  const dispatch = useDispatch()
   
 
   useEffect(() => {
@@ -33,7 +35,6 @@ const Sidebar = ({ filter, setFilter }) => {
   }, []);
 
   useEffect(() => {
-    //Initials state with existing search params in the url
     const newFilter = {
       sort: params.get("sort") || "newest",
       limit: Number(params.get("limit")) || 10,
@@ -43,10 +44,11 @@ const Sidebar = ({ filter, setFilter }) => {
       color: params.getAll("color"),
       size: params.getAll("size"),
       category: params.get("category") || "",
-      page: Number(params.get("page")) || 1
+      page: Number(params.get("page")) || 1,
+      q: params.get("q")
     };
 
-    setFilter(newFilter);
+    dispatch(setFilter(newFilter));
   }, []);
 
   //Use to update params with filter object
@@ -59,7 +61,7 @@ const Sidebar = ({ filter, setFilter }) => {
         newParams.set(key, value);
       }
     });
-    console.log(newParams);
+ 
 
     navigate(`?${newParams.toString()}`);
   };
@@ -83,11 +85,27 @@ const Sidebar = ({ filter, setFilter }) => {
       newFilter[input.name] = input.value;
     }
     updateFilters(newFilter);
-    setFilter(newFilter);
+    dispatch(setFilter(newFilter));
   };
 
   return (
-    <div className="h-screen max-w-60 space-y-5">
+    <div className="h-screen space-y-5">
+     <div className="border border-gray-500 shadow-xs py-4 px-2.5 grow">
+        <h1 className="mb-4 text-xl font-semibold">Filter By Price</h1>
+        <div className="flex grow gap-6 items-center">
+        <span>${filter?.minPrice}</span> -
+        <span>${filter?.maxPrice}</span>
+        </div>
+        <input type="range" className="mx-auto my-3"/>
+        <div className="flex gap-2 justify-between">
+          <button className="rounded text-sm md:text-base cursor-pointer px-4 py-1.5 border border-gray-200 shadow-xs">
+    Reset
+          </button>
+          <button className="rounded text-sm md:text-base  shadow-xs cursor-pointer px-4 py-1.5  text-white bg-red-600/70">
+      Apply
+          </button>
+        </div>
+      </div>
       <div className="border border-gray-500 shadow-xs py-4 px-2.5 ">
         <h1 className="mb-4 text-xl font-semibold">Filter By Colors</h1>
         <ul>

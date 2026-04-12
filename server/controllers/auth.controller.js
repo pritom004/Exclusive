@@ -36,7 +36,6 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password, guestId } = req.body;
-  console.log(guestId);
 
   try {
     const user = await loginUser(email, password);
@@ -61,7 +60,7 @@ export const login = async (req, res) => {
         cart.totalPrice = guestCart.totalPrice;
         cart.guestId = null;
         await cart.save();
-        await Cart.deleteOne({guestId})
+        await Cart.deleteOne({ guestId });
       }
     }
 

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import { FaStar, FaStarHalf } from "react-icons/fa";
 import { addToCart } from "../../../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Skeleton from "./Skeleton";
 
 const Cart = ({
   url,
@@ -16,6 +17,8 @@ const Cart = ({
   id,
   color,
   size,
+  className,
+  loading,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -49,8 +52,12 @@ const Cart = ({
 
   const { full, half, empty } = getStarCounts(ratings);
 
-  return (
-    <nav className="group">
+  return loading ? (
+    <div className="max-w-60 max-h-58">
+      <Skeleton count={5} />
+    </div>
+  ) : (
+    <nav className={`group ${className}`}>
       <div className="relative max-w-60 mb-4 overflow-hidden grow-0 rounded justify-stretch">
         <img
           className="size-60 grow cursor-pointer"

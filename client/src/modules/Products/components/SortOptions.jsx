@@ -1,5 +1,7 @@
-import React from 'react'
-import { useNavigate, useSearchParams } from 'react-router';
+import React from "react";
+import { useNavigate, useSearchParams } from "react-router";
+import { setFilter } from "../../../redux/slices/productSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export const SORT_OPTIONS = [
   {
@@ -29,44 +31,43 @@ export const SORT_OPTIONS = [
   },
 ];
 
-
-const SortOptions = ({filter, setFilter}) => {
-
-    const [searchParams] = useSearchParams()
-    const navigate = useNavigate()
+const SortOptions = () => {
+  const { filter } = useSelector((state) => state.product);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSelect = (e) => {
     const sort = e.target.value;
     if (!sort) return;
     const params = new URLSearchParams(searchParams);
     params.set("sort", sort);
-    setFilter(prev => ({
-      ...prev,
-      sort: sort
-    }))
+    dispatch(
+      setFilter({
+        ...filter,
+        sort: sort,
+      }),
+    );
     navigate(`?${params.toString()}`);
   };
 
-
-    return (
-  
-        <div className="flex w-51 p-1.5 shadow-xs justify-between border border-gray-500">
-          <select
-            name="filter"
-            id="sort"
-            className="w-full"
-            onChange={handleSelect}
-            value={filter.sort}
-          >
-            {SORT_OPTIONS.map((option) => (
-              <option key={option.id} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-    
-  )
-}
+  return (
+    <div className="flex w-51 p-1.5 shadow-xs justify-between border border-gray-500">
+      <select
+        name="filter"
+        id="sort"
+        className="w-full"
+        onChange={handleSelect}
+        value={filter.sort}
+      >
+        {SORT_OPTIONS.map((option) => (
+          <option key={option.id} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
 
 export default SortOptions;

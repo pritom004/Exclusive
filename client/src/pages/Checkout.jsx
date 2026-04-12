@@ -21,7 +21,7 @@ const Checkout = () => {
     dispatch(fetchCheckout);
   }, [dispatch]);
 
-  console.log(checkout);
+
 
   const validateForm = (formData) => {
     const fullName = formData.get("fullName") || "";
@@ -41,10 +41,10 @@ const Checkout = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log();
+
 
     const formData = new FormData(e.target);
-    console.log(formData);
+
 
     const fullName = formData.get("fullName") || "";
     const streetAddress = formData.get("streetAddress") || "";

@@ -2,17 +2,13 @@ import React, { useState } from "react";
 import { NavLink } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../redux/slices/authslice";
+import { registerUser } from "../redux/slices/authSlice";
+import Skeleton from "../modules/Home/components/Skeleton";
+
 
 const Signup = () => {
-  
-
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.auth);
-
-
-
-
 
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,15 +29,17 @@ const Signup = () => {
     setIsSubmitting(false);
   };
 
-    if (loading) {
-    return <div>Loading</div>;
-  }
-
   return (
     <div className="py-14 flex duration-300 px-4">
+      {!isImageLoaded && (
+        <div className="sm:max-w-109 xl:max-w-175 hidden md:block w-full">
+          <Skeleton count={13}/>
+        </div>
+      )}
       <img
         src="signup-image.jpeg"
         className="sm:max-w-109 xl:max-w-175 hidden md:block"
+        onLoad={() => setIsImageLoaded(true)}
       />
       <nav className="flex flex-col justify-center items-center grow px-4">
         <form onSubmit={handleSubmit}>

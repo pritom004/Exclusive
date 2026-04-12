@@ -1,126 +1,115 @@
+
 import Product from "../models/product.model.js";
 export const products = async (req, res) => {
   try {
     const {
       sort,
-      limit = 20,
+      limit = 6,
       minPrice,
       maxPrice,
-      status,
+      category,
       color,
       size,
-      isNew,
-      category,
+      page = 1,
+      search,
     } = req.query;
 
-console.log({
-      sort,
-      limit,
-      minPrice,
-      maxPrice,
-      status,
-      color,
-      size,
-      isNew,
-      category,
-    });
-
     const filter = {};
+    const sortProducts = {};
+    
+    // Ensure limit and page are valid numbers
+    const parsedLimit = Math.max(1, Number(limit));
+    const parsedPage = Math.max(1, Number(page));
+    const skip = parsedLimit * (parsedPage - 1);
 
-    if (category) {
-      //e.g. find({category: 'electronics'})
-      filter.category = category === "all"? "" : category;
-    }
-
-    // Price filter
+    // 1. Price Filtering
     if (minPrice || maxPrice) {
       filter.price = {};
-      //e.g. find({price: {$gte: 80}})
       if (minPrice) filter.price.$gte = Number(minPrice);
       if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
 
-    // Status filter
-  
-    // Color filter
+    // 2. Search Filtering (Case-insensitive partial match)
+    if (search) {
+      filter.name = { $regex: search, $options: "i" };
+    }
+
+    // 3. Array & Category Filtering
     if (color) {
-      //e.g. find({status: 'stock_out'})
-      filter.colors = color; // matches array
+      filter.colors = Array.isArray(color) ? { $in: color } : color;
     }
-
-    // Size filter
     if (size) {
-      filter.sizes.$in = size; // matches array
+      filter.sizes = Array.isArray(size) ? { $in: size } : size;
+    }
+    if (category && category.toLowerCase() !== "all") {
+      filter.category = category;
     }
 
-    // New products (last 7 days)
-    if (isNew === "true") {
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      filter.createdAt = { $gte: sevenDaysAgo };
-    }
+    // Get total document count for pagination math
+    const totalDocuments = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(totalDocuments / parsedLimit);
 
-    // Sorting
-    let sortOption = {};
-
-    
-    
-
-    let useRatingSort = false;
-    const applySort = (s) => {
-      if (s === "discount_desc") sortOption.discount = -1;
-      if (s === "price_asc") sortOption.price = 1;
-      if (s === "price_desc") sortOption.price = -1;
-      if (s === "newest") sortOption.createdAt = -1;
-      if (s === "rating_desc") useRatingSort = true;
-    };
-
-    if (Array.isArray(sort)) {
-      sort.forEach(applySort);
-    } else if (sort) {
-      applySort(sort);
-    }
-
-    // block invalid combination
-    if (useRatingSort && Array.isArray(sort) && sort.length > 1) {
-      return res.status(400).json({
-        message: "rating_desc cannot be combined with other sorts",
-      });
-    }
-console.log(filter);
-
-    // If sorting by rating, we must use aggregation
-    if (useRatingSort) {
-      const products = await Product.aggregate([
+    // 4. Handle Aggregation Query (For Rating Sort)
+    if (sort === "rating_desc") {
+      const results = await Product.aggregate([
         { $match: filter },
         {
           $addFields: {
             avgRating: { $avg: "$ratings.rating" },
           },
         },
+        // Sort must come BEFORE skip and limit to sort the entire collection accurately
         { $sort: { avgRating: -1 } },
-        { $limit: Number(limit) },
+        { $skip: skip },
+        { $limit: parsedLimit },
       ]);
 
-      return res.json(products);
+      return res.json({
+        success: true,
+        totalPage: totalPages,
+        page: parsedPage,
+        data: results,
+      });
     }
 
-    const products = await Product.find(filter)
-      .sort(sortOption)
-      .limit(Number(limit));
+    // 5. Handle Standard Queries
+    switch (sort) {
+      case "price_asc":
+        sortProducts.price = 1;
+        break;
+      case "price_desc":
+        sortProducts.price = -1;
+        break;
+      case "discount_desc":
+        sortProducts.discount = -1;
+        break;
+      case "newest":
+      default:
+        sortProducts.createdAt = -1; // Newest first by default
+        break;
+    }
 
-      console.log(products);
-      
+    const results = await Product.find(filter)
+      .sort(sortProducts)
+      .skip(skip)
+      .limit(parsedLimit);
 
-    res.json(products);
+    res.json({
+      success: true,
+      totalPage: totalPages,
+      page: parsedPage,
+      data: results,
+    });
+    
   } catch (error) {
+    console.error("Products Fetch Error:", error);
     res.status(500).json({
+      success: false,
       message: "Error fetching products",
       error: error.message,
     });
   }
 };
-
 export const productDetails = async (req, res) => {
   try {
     const product = await Product.findById(req.params.productId);
