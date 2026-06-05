@@ -6,6 +6,7 @@ import Button from "../components/ui/Button";
 import { MdOutlineCancel } from "react-icons/md";
 import { createCheckout } from "../redux/slices/checkoutSlice";
 import ApplyCoupon from "../components/common/ApplyCoupon";
+import Loading from "../components/common/Loading";
 
 
 const CartDetails = () => {
@@ -22,7 +23,7 @@ const CartDetails = () => {
   }, [user, guestId]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   const handleRemove = (productId) => {

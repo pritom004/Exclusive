@@ -28,7 +28,7 @@ export const loginUser = createAsyncThunk("auth/loginUser", async (userData, {re
     
         return response.data;
     } catch (error) {
-        return rejectWithValue(error.response?.data || error.message);
+        return rejectWithValue(error?.response?.data || error.message);
     }
 })
 
@@ -128,7 +128,7 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        toast.error(action.payload.message)
+        toast.error(action.payload)
       })
       .addCase(getAccessToken.fulfilled, (state, action) => {
         state.token = action.payload;

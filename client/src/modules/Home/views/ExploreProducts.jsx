@@ -3,6 +3,7 @@ import Button from "../../../components/ui/Button";
 import Cart from "../components/Cart";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchExploreProducts } from "../../../redux/slices/productSlice";
+import Skeleton from "../components/Skeleton";
 
 const ExploreProducts = () => {
   const { exploreProducts, loading } = useSelector((state) => state.product);
@@ -25,22 +26,15 @@ const ExploreProducts = () => {
 
       <nav className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-20 gap-y-6">
         {exploreProducts &&
-          exploreProducts?.map((product) => (
-            <Cart
-              key={product._id}
-              url={product?.images?.[0]?.url}
-              price={product.price}
-              discount={product.discount}
-              alt={product?.images?.[0]?.alt}
-              name={product.name}
-              ratings={product.ratings}
-              reviews={product.reviews}
-              id={product._id}
-              color={product.colors[0]}
-              size={product.sizes[0]}
-              loading={loading}
-            />
-          ))}
+          exploreProducts?.map((product) => <Cart product={product} />)}
+        {!exploreProducts &&
+          Array.from({ length: 10 })
+            .fill(0)
+            .map((pro, index) => (
+              <div key={index} className="max-w-60 max-h-58">
+                <Skeleton count={5} />
+              </div>
+            ))}
       </nav>
       <div className="flex justify-center py-12">
         <Button>

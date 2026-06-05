@@ -21,18 +21,10 @@ const ProductsGrid = () => {
         {allProducts?.data &&
           allProducts?.data.length > 0 &&
           allProducts?.data?.map((product) => (
-            <Cart
-              key={product._id}
-              url={product.images[0].url}
-              alt={product.images[1].alt}
-              name={product.name}
-              price={product.price}
-              discount={product.discount}
-              ratings={product.ratings}
-              id={product._id}
-              className="mx-auto"
-              loading={loading}
-            />
+           <Cart
+           key={product._id}
+           product={product}
+          />
           ))}
       </div>
     </section>

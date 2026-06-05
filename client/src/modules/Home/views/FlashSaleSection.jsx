@@ -5,12 +5,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { useRef } from "react";
 
-
 import "swiper/css";
 import "swiper/css/navigation";
 import Button from "../../../components/ui/Button";
 import { fetchFlashProduct } from "../../../redux/slices/productSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Skeleton from "../components/Skeleton";
 
 const FlashSaleSection = () => {
   const swiperRef = useRef(null);
@@ -34,11 +34,7 @@ const FlashSaleSection = () => {
 
   useEffect(() => {
     dispatch(fetchFlashProduct());
-    
-    
   }, []);
-
-
 
   return (
     <section className="container mx-auto px-4 mt-40">
@@ -104,23 +100,19 @@ const FlashSaleSection = () => {
         >
           {flashSaleProducts?.map((product) => (
             <SwiperSlide key={product?._id}>
-              
-              <Cart
-                key={product._id}
-                url={ product?.images?.[0]?.url}
-                price={product.price}
-                discount={product.discount}
-                alt={product?.images?.[0]?.alt}
-                name={product.name}
-                ratings={product.ratings}
-                reviews={product.reviews}
-                id={product._id}
-                  color={product?.colors[0]}
-                size={product?.sizes[0]}
-              />
-            
+              <Cart product={product} />
             </SwiperSlide>
           ))}
+          {!flashSaleProducts &&
+            Array.from({ length: 10 })
+              .fill(0)
+              .map((pro, index) => (
+                <SwiperSlide key={index}>
+                  <div className="max-w-60 max-h-58">
+                    <Skeleton count={1} className="h-58"/>
+                  </div>
+                </SwiperSlide>
+              ))}
         </Swiper>
       </div>
 

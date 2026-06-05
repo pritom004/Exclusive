@@ -7,19 +7,23 @@ import { useDispatch, useSelector } from "react-redux";
 import Skeleton from "./Skeleton";
 
 const Cart = ({
-  url,
+  product
+}) => {
+
+  const {
+    images,
   alt,
   name,
   price,
   discount,
   ratings = [],
   reviews,
-  id,
+  _id,
   color,
   size,
   className,
-  loading,
-}) => {
+  loading,} = product;
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, guestId } = useSelector((state) => state.auth);
@@ -54,16 +58,16 @@ const Cart = ({
 
   return loading ? (
     <div className="max-w-60 max-h-58">
-      <Skeleton count={5} />
+      <Skeleton count={1} />
     </div>
   ) : (
     <nav className={`group ${className}`}>
       <div className="relative max-w-60 mb-4 overflow-hidden grow-0 rounded justify-stretch">
         <img
           className="size-60 grow cursor-pointer"
-          onClick={() => navigate(`/products/${id}`)}
-          src={url}
-          alt={alt}
+          onClick={() => navigate(`/products/${_id}`)}
+          src={images[0].url}
+          alt={name}
         />
         {discount && discount >= 8 && (
           <div

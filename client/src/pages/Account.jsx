@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { useState } from "react";
 import EditProfile from "../modules/Account/views/EditProfile";
 import {useSelector} from "react-redux";
+import Loading from "../components/common/Loading";
 
 const accountOptions = [
   {
@@ -41,7 +42,7 @@ const Account = () => {
   const [currentTab, setCurrentTab] = useState("profile");
 
   if(loading){
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   return (

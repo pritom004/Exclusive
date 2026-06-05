@@ -3,6 +3,7 @@ import Button from "../../../components/ui/Button";
 import Cart from "../components/Cart";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBestSellingProducts } from "../../../redux/slices/productSlice";
+import Skeleton from "../components/Skeleton";
 
 const BestSelling = () => {
   const { bestSellingProducts, loading } = useSelector(
@@ -30,23 +31,22 @@ const BestSelling = () => {
         </Button>
       </div>
 
-      <div className="flex flex-wrap justify-between">
+      <div className="flex gap-1 space-y-6 flex-wrap justify-between">
         {bestSellingProducts?.map((product) => (
           <Cart
-            key={product._id}
-            url={product?.images?.[0]?.url}
-            price={product.price}
-            discount={product.discount}
-            alt={product?.images?.[0]?.alt}
-            name={product.name}
-            ratings={product.ratings}
-            reviews={product.reviews}
-            id={product._id}
-            color={product.colors[0]}
-            size={product.sizes[0]}
-            loading={loading}
+           product={product}
           />
         ))}
+        
+ {!bestSellingProducts  &&
+          Array.from({ length: 6 })
+            .fill(0)
+            .map((pro, index) => (
+              <div key={index} className="w-60 my-3 h-58">
+                <Skeleton count={1} className="h-50"/>
+              </div>
+            ))}
+
       </div>
     </section>
   );

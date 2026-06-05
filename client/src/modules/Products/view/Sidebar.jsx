@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { setFilter } from "../../../redux/slices/productSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { Range, getTrackBackground } from "react-range";
 const colors = ["red", "green", "blue", "white", "gray", "black"];
 
 const categories = ["All", "Shoes", "Clothing", "Pant", "Jens"];
 
 const sizes = ["S", "M", "L", "X", "XL"];
+
 
 const Sidebar = () => {
   //Provide existing search params to state and URLSearchParams
@@ -16,12 +18,17 @@ const Sidebar = () => {
   //Used to navigate or add the search params
   const navigate = useNavigate();
 
-  const {filter} = useSelector(state => state.product)
-  const dispatch = useDispatch()
-  
+  const { filter } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
 
+const {allProducts} = useSelector(state => state.product)
+
+const MAX = allProducts?.data?.reduce((acc, curr) => acc = acc < curr.price? curr.price : acc, 0) ||1000;
+const [values, setValues] = useState([10, 200]);
+const MIN = 0;
+
+// Adding Url search params to browser
   useEffect(() => {
-    //If there are no search params in the url add them with default values
     if (!searchParams.toString()) {
       Object.entries(filter).forEach(([key, value]) => {
         if (Array.isArray(value)) {
@@ -34,6 +41,7 @@ const Sidebar = () => {
     navigate(`?${params.toString()}`);
   }, []);
 
+ // Initial Load or Reload 
   useEffect(() => {
     const newFilter = {
       sort: params.get("sort") || "newest",
@@ -45,7 +53,7 @@ const Sidebar = () => {
       size: params.getAll("size"),
       category: params.get("category") || "",
       page: Number(params.get("page")) || 1,
-      q: params.get("q")
+      // q: params.get("q"),
     };
 
     dispatch(setFilter(newFilter));
@@ -61,7 +69,6 @@ const Sidebar = () => {
         newParams.set(key, value);
       }
     });
- 
 
     navigate(`?${newParams.toString()}`);
   };
@@ -88,21 +95,72 @@ const Sidebar = () => {
     dispatch(setFilter(newFilter));
   };
 
+  const handleRange = (values) => {
+   // update filter object
+   // use update filter, spreed filter
+    const newFilter = { ...filter };
+    
+    newFilter.minPrice = values[0];
+    newFilter.maxPrice = values[1];
+    
+    updateFilters(newFilter);
+    dispatch(setFilter(newFilter));
+  }
+
   return (
     <div className="h-screen space-y-5">
-     <div className="border border-gray-500 shadow-xs py-4 px-2.5 grow">
+      <div className="border border-gray-500 shadow-xs py-4 px-2.5">
         <h1 className="mb-4 text-xl font-semibold">Filter By Price</h1>
-        <div className="flex grow gap-6 items-center">
-        <span>${filter?.minPrice}</span> -
-        <span>${filter?.maxPrice}</span>
-        </div>
-        <input type="range" className="mx-auto my-3"/>
+        <div className="w-full px-2 my-4 space-y-3">
+      <h3 className="flex justify-between">
+        <span>${values[0]}</span>  - <span> ${values[1]}</span></h3>
+
+        <Range
+        step={10}
+        min={MIN}
+        max={MAX}
+        values={values}
+        onChange={handleRange}
+        renderTrack={({ props, children }) => (
+          <div
+            {...props}
+            style={{
+              ...props.style,
+              height: '6px',
+              width: '100%',
+              borderRadius: '4px',
+              background: getTrackBackground({
+                values,
+                colors: ['#ccc', '#007bff', '#ccc'],
+                min: MIN,
+                max: MAX,
+              }),
+            }}
+          >
+            {children}
+          </div>
+        )}
+        renderThumb={({ props }) => (
+          <div
+            {...props}
+            style={{
+              ...props.style,
+              height: '20px',
+              width: '20px',
+              borderRadius: '50%',
+              backgroundColor: '#007bff',
+            }}
+          />
+        )}
+      />
+  
+    </div>
         <div className="flex gap-2 justify-between">
           <button className="rounded text-sm md:text-base cursor-pointer px-4 py-1.5 border border-gray-200 shadow-xs">
-    Reset
+            Reset
           </button>
           <button className="rounded text-sm md:text-base  shadow-xs cursor-pointer px-4 py-1.5  text-white bg-red-600/70">
-      Apply
+            Apply
           </button>
         </div>
       </div>

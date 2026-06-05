@@ -3,7 +3,8 @@ import { NavLink } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../redux/slices/authSlice";
-import Skeleton from "../modules/Home/components/Skeleton";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 
 const Signup = () => {
@@ -32,8 +33,8 @@ const Signup = () => {
   return (
     <div className="py-14 flex duration-300 px-4">
       {!isImageLoaded && (
-        <div className="sm:max-w-109 xl:max-w-175 hidden md:block w-full">
-          <Skeleton count={13}/>
+        <div className="sm:max-w-109 md:block xl:max-w-175 hidden w-full">
+          <Skeleton count={1}  className="h-90 lg:h-175"/>
         </div>
       )}
       <img
@@ -89,10 +90,14 @@ const Signup = () => {
             Create Account
           </button>
         </form>
+         <a href={`${import.meta.env.VITE_BACKEND_URL}/auth/google`}>
         <button className="rounded border flex gap-1.5 items-center justify-center py-3 cursor-pointer bg-white w-sm mb-8">
           <FcGoogle className="size-6.5" />
-          Sign up with Google
+         
+            Sign up with Google
+         
         </button>
+         </a>
 
         <div className="flex gap-x-4">
           <p className="text-gray-600">Already have an account?</p>{" "}

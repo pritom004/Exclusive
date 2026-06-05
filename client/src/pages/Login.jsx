@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { NavLink } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/slices/authSlice";
+import Loading from "../components/common/Loading";
+import Skeleton from "../modules/Home/components/Skeleton";
 
 const Login = () => {
 
   const { loading, guestId} = useSelector(state => state.auth)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch()
-
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   
   const handleSubmit = (e) => {
@@ -25,15 +27,27 @@ const Login = () => {
 
 
   if(loading){
-    <div>Loading</div>
+    <Loading />
   }
 
   return (
     <div className="py-14 flex duration-300 px-4">
-      <img
+       <div>
+         <img
+        onLoaded={() => setImageLoaded(true)}
         src="signup-image.jpeg"
         className="sm:max-w-109 xl:max-w-175 hidden md:block"
       />
+      {
+        !imageLoaded && <div className="sm:max-w-109 xl:max-w-175 hidden md:block">
+          <Skeleton count={1}/>
+        </div>
+      }
+       </div>
+      
+      
+        
+
       <nav className="flex flex-col justify-center items-center grow px-4">
         <form onSubmit={handleSubmit}><div>
           <div>

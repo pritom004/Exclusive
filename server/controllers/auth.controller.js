@@ -109,6 +109,11 @@ export const getAccessToken = async (req, res) => {
 
 export const getUser = async (req, res) => {
   try {
+
+    if(req.user){
+      return res.status(200).json({user: req.user});
+    }
+
     const user = await User.findById(req.userId).select(
       "-password -refreshToken",
     );

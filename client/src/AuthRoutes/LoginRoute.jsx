@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router";
+import Loading from "../components/common/Loading";
 
 
 const LoginRoute = ({ children }) => {
@@ -13,7 +14,7 @@ const LoginRoute = ({ children }) => {
 
 
   if (isAuthenticating || loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return user? (redirect? <Navigate to={`/${redirect}`}/> : <Navigate to='/'/>) : children;

@@ -50,7 +50,6 @@ const Navbar = () => {
 
   const [searchParams] = useSearchParams();
 
-
   const handleSearch = () => {
     if (!search) return;
 
@@ -58,7 +57,7 @@ const Navbar = () => {
 
     params.set("search", search);
 
-    dispatch(setFilter({...filter, search}))
+    dispatch(setFilter({ ...filter, search }));
     navigate(`/products?${params.toString()}`);
   };
 

@@ -26,18 +26,8 @@ const RelatedProducts = (category) => {
         {relatedProducts?.length > 0 &&
           relatedProducts.map((product) => (
             <Cart
-              key={product._id}
-              url={product?.images?.[0]?.url}
-              price={product.price}
-              discount={product.discount}
-              alt={product?.images?.[0]?.alt}
-              name={product.name}
-              ratings={product.ratings}
-              reviews={product.reviews}
-              id={product._id}
-                color={product.colors[0]}
-                size={product.sizes[0]}
-            />
+           product={product}
+          />
           ))}
       </div>
     </section>
