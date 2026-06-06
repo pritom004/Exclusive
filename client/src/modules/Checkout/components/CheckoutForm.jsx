@@ -30,8 +30,7 @@ const CheckoutForm = ({clientSecret}) => {
       return;
     }
 
-    // `redirect: 'if_required'` means Stripe may redirect for required actions (e.g., 3DS).
-    // If we get a result back, we can safely show a success toast when the payment succeeded.
+  
     if (result.paymentIntent?.status === "succeeded") {
       toast.success("Order confirmed successfully");
     }

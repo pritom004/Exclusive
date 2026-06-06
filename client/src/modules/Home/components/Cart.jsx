@@ -33,7 +33,7 @@ const Cart = ({
 
     dispatch(
       addToCart({
-        productId: id,
+        productId: _id,
         color,
         size,
         quantity: 1,
@@ -57,12 +57,12 @@ const Cart = ({
   const { full, half, empty } = getStarCounts(ratings);
 
   return loading ? (
-    <div className="max-w-60 max-h-58">
+    <div className="max-w-60 max-h-58 shrink-0">
       <Skeleton count={1} />
     </div>
   ) : (
     <nav className={`group ${className}`}>
-      <div className="relative max-w-60 mb-4 overflow-hidden grow-0 rounded justify-stretch">
+      <div className="relative my-2 w-60 mb-4 overflow-hidden grow-0 rounded justify-stretch">
         <img
           className="size-60 grow cursor-pointer"
           onClick={() => navigate(`/products/${_id}`)}

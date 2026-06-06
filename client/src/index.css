@@ -9,3 +9,8 @@
   background-color: red; 
   color: red;
 }
+
+
+.body{
+  scroll-behavior: smooth;
+}

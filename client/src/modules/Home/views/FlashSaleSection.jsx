@@ -92,10 +92,11 @@ const FlashSaleSection = () => {
           spaceBetween={24}
           slidesPerView={4}
           breakpoints={{
-            50: { slidesPerView: 2 },
-            320: { slidesPerView: 2 },
-            640: { slidesPerView: 3 },
-            1024: { slidesPerView: 6 },
+            50: { slidesPerView: 1 },
+            480: { slidesPerView: 1 },
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 4 },
+            1280: { slidesPerView: 5 },
           }}
         >
           {flashSaleProducts?.map((product) => (
