@@ -24,11 +24,11 @@ const ExploreProducts = () => {
         Explore Our Products
       </h4>
 
-      <nav className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-20 gap-y-6">
+      <nav className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-9 xl:grid-cols-5 gap-x-20 gap-y-6">
         {exploreProducts &&
           exploreProducts?.map((product) => <Cart product={product} />)}
         {!exploreProducts &&
-          Array.from({ length: 10 })
+          Array.from({ length: 5 })
             .fill(0)
             .map((pro, index) => (
               <div key={index} className="max-w-60 max-h-58">

@@ -17,24 +17,24 @@ export const products = async (req, res) => {
     const filter = {};
     const sortProducts = {};
     
-    // Ensure limit and page are valid numbers
+  
     const parsedLimit = Math.max(1, Number(limit));
     const parsedPage = Math.max(1, Number(page));
     const skip = parsedLimit * (parsedPage - 1);
 
-    // 1. Price Filtering
+   
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
       if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
 
-    // 2. Search Filtering (Case-insensitive partial match)
+  
     if (search) {
       filter.name = { $regex: search, $options: "i" };
     }
 
-    // 3. Array & Category Filtering
+   
     if (color) {
       filter.colors = Array.isArray(color) ? { $in: color } : color;
     }
@@ -45,11 +45,11 @@ export const products = async (req, res) => {
       filter.category = category;
     }
 
-    // Get total document count for pagination math
+   
     const totalDocuments = await Product.countDocuments(filter);
     const totalPages = Math.ceil(totalDocuments / parsedLimit);
 
-    // 4. Handle Aggregation Query (For Rating Sort)
+   
     if (sort === "rating_desc") {
       const results = await Product.aggregate([
         { $match: filter },
@@ -58,7 +58,7 @@ export const products = async (req, res) => {
             avgRating: { $avg: "$ratings.rating" },
           },
         },
-        // Sort must come BEFORE skip and limit to sort the entire collection accurately
+       
         { $sort: { avgRating: -1 } },
         { $skip: skip },
         { $limit: parsedLimit },
@@ -72,7 +72,7 @@ export const products = async (req, res) => {
       });
     }
 
-    // 5. Handle Standard Queries
+  
     switch (sort) {
       case "price_asc":
         sortProducts.price = 1;
@@ -85,7 +85,7 @@ export const products = async (req, res) => {
         break;
       case "newest":
       default:
-        sortProducts.createdAt = -1; // Newest first by default
+        sortProducts.createdAt = -1; 
         break;
     }
 

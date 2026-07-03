@@ -8,17 +8,39 @@ import { FaTruckFast } from "react-icons/fa6";
 import { PiRecycleBold } from "react-icons/pi";
 import { FaStar, FaStarHalf } from "react-icons/fa";
 import RelatedProducts from "../modules/ProductDeatils/views/RelatedProducts";
+import useCart from "../hooks/useCarts";
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const { selectedProduct } = useSelector((state) => state.product);
   const [selectedImage, setSelectedImage] = useState();
+  
+  const {addToCartUtil, fetchCartsUtil, removeItemUtil, getItem} = useCart()
+  const selectedItem = getItem(productId)
+  console.log(selectedItem, "selectedDetails");
+  console.log(selectedItem?.quantity);
+  
   const [selectedDetails, setSelectedDetails] = useState({
-    color: "",
-    size: "",
-    quantity: 0,
+    color: selectedItem?.color || "",
+    size: selectedItem?.size || "",
+    quantity: selectedItem?.quantity || 0,
   });
+
+
+  const {user, guestId} = useSelector(store => store.auth)
+
+ 
+
+  
+  
+
+  useEffect(() => {
+    
+    if(selectedDetails.quantity > 0){
+      addToCartUtil({...selectedDetails, productId, userId: user?._id, guestId })
+    }
+  }, [selectedDetails])
 
   useEffect(() => {
     if (productId) {
