@@ -36,7 +36,7 @@ export const stripeWebhook = async (request, response) => {
           $set: {
             isPaid: true,
             paymentStatus: "paid",
-            orderStatus: ""
+            orderStatus: "processing"
           },
         });
         console.log(`✅ Payment successful for order: ${paymentIntent.metadata.orderId}`);

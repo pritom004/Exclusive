@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../api/axios";
 import toast from "react-hot-toast";
 
-export const createCheckout = createAsyncThunk("checkout/createCheckout", async (cartId) => {
-    const response = await api.post("/api/checkout/", {cartId});
+export const createCheckout = createAsyncThunk("checkout/createCheckout", async (checkoutData) => {
+    const response = await api.post("/api/checkout/", checkoutData);
 
     return response.data;
 })
@@ -11,7 +11,7 @@ export const createCheckout = createAsyncThunk("checkout/createCheckout", async 
 export const fetchCheckout = createAsyncThunk("checkout/fetchCheckout", async() => {
     const response = await api.get("/api/checkout/");
 
-    response.data;
+    return response.data;
 })
 
 export const createPaymentIntent = createAsyncThunk(
@@ -31,15 +31,30 @@ const checkoutSlice = createSlice({
     name: "checkout",
     initialState: {
         checkout: null,
-        clientSecret: null
+        clientSecret: null,
+        loading: false
     },
     extraReducers: (builder) => {
         builder
+        .addCase(createCheckout.pending, (state) => {
+            state.loading = true;
+        })
         .addCase(createCheckout.fulfilled, (state, action) => {
             state.checkout = action.payload;
+            state.loading = false;
+        })
+        .addCase(createCheckout.rejected, (state) => {
+            state.loading = false;
+        })
+        .addCase(fetchCheckout.pending, (state) => {
+            state.loading = true;
         })
         .addCase(fetchCheckout.fulfilled, (state, action) => {
            state.checkout = action.payload;
+           state.loading = false;
+        })
+        .addCase(fetchCheckout.rejected, (state) => {
+           state.loading = false;
         })
         .addCase(createPaymentIntent.fulfilled, (state, action) => {
             state.clientSecret = action.payload?.clientSecret ?? null;

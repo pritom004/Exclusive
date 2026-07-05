@@ -167,7 +167,16 @@ const MIN = 0;
       <div className="border border-gray-500 shadow-xs py-4 px-2.5 ">
         <h1 className="mb-4 text-xl font-semibold">Filter By Colors</h1>
         <ul>
-          {colors.map((color) => (
+          {colors.map((color) => {
+            const accentMap = {
+              red: "accent-red-500",
+              green: "accent-green-500",
+              blue: "accent-blue-500",
+              white: "accent-white",
+              gray: "accent-gray-500",
+              black: "accent-black"
+            };
+            return (
             <li key={color} className="flex items-center gap-3.5">
               <input
                 name="color"
@@ -175,12 +184,12 @@ const MIN = 0;
                 id={color}
                 value={color}
                 checked={filter.color.includes(color)}
-                style={{ accentColor: color }}
+                className={accentMap[color]}
                 onChange={handleChange}
               />
               <label htmlFor={color}>{color.toUpperCase()}</label>
             </li>
-          ))}
+          )})}
         </ul>
       </div>
 

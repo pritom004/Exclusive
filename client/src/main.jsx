@@ -6,6 +6,8 @@ import App from "./App.jsx";
 import { store } from "./redux/store.js";
 import { Provider } from "react-redux";
 import { AuthProvider } from "./AuthRoutes/AuthProvider.jsx";
+import 'react-loading-skeleton/dist/skeleton.css';
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>

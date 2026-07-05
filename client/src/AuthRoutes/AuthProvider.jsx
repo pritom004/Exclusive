@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import api from "../api/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken, getUser, setIsAuthenticating} from "../redux/slices/authSlice";
+import Loading from "../components/common/Loading";
+
 export const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
-  const { token } = useSelector((state) => state.auth);
+  const { token, isAuthenticating } = useSelector((state) => state.auth);
 
   
   //Fetch Token and Than user
@@ -20,7 +22,7 @@ export const AuthProvider = ({ children }) => {
         dispatch(setIsAuthenticating(false));      }
     }
     getToken();
-  }, []);
+  }, [dispatch]);
 
   //Set Token as header in every route
   useEffect(() => {
@@ -43,8 +45,8 @@ export const AuthProvider = ({ children }) => {
         const originalRequest = error.config;
 
         if (
-          error.response.data.message === "Unauthorized!" ||
-          (error.response.status == 401 && !originalRequest.retry)
+          error.response?.data?.message === "Unauthorized!" ||
+          (error.response?.status == 401 && !originalRequest.retry)
         ) {
           try {
             originalRequest.retry = true;
@@ -58,14 +60,18 @@ export const AuthProvider = ({ children }) => {
             return Promise.reject(refreshError);
           }
         } else {
-          setToken(null);
-          return Promise.reject(refreshError);
+          dispatch(setToken(null));
+          return Promise.reject(error);
         }
       },
     );
 
     return () => api.interceptors.response.eject(refreshInterceptor);
-  }, []);
+  }, [dispatch]);
+
+  if (isAuthenticating) {
+    return <Loading />;
+  }
 
   return children;
 };

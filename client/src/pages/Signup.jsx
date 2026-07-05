@@ -1,31 +1,27 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router";
 import { FcGoogle } from "react-icons/fc";
-import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../redux/slices/authSlice";
+import useAuth from "../hooks/useAuth";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 
 const Signup = () => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const dispatch = useDispatch();
-
+  const { registerUserUtil } = useAuth();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     const formData = new FormData(e.target);
 
-    dispatch(
-      registerUser({
+    await registerUserUtil({
         name: formData.get("name"),
         email: formData.get("email"),
         password: formData.get("password"),
-      }),
-    );
+      })
     e.target.reset();
     setIsSubmitting(false);
   };

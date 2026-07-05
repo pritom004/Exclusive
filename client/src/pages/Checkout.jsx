@@ -12,13 +12,14 @@ import { stripePromise } from "../utils/loadStripe";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../modules/Checkout/components/CheckoutForm";
 import toast from "react-hot-toast";
+import Skeleton from "../modules/Home/components/Skeleton";
 
 const Checkout = () => {
   const dispatch = useDispatch();
-  const { checkout, clientSecret } = useSelector((state) => state.checkout);
+  const { checkout, clientSecret, loading } = useSelector((state) => state.checkout);
 
   useEffect(() => {
-    dispatch(fetchCheckout);
+    dispatch(fetchCheckout());
   }, [dispatch]);
 
 
@@ -98,6 +99,12 @@ const Checkout = () => {
       <h2 className="tracking-wide text-black text-[2.5rem] font-semibold mb-8">
         Billing Details
       </h2>
+      {loading ? (
+        <div className="flex grow my-6 flex-wrap gap-y-6 gap-x-10 justify-between">
+          <Skeleton count={1} className="h-96 w-full max-w-xl" />
+          <Skeleton count={1} className="h-96 w-full sm:min-w-sm md:min-w-md" />
+        </div>
+      ) : (
       <form
         onSubmit={handleSubmit}
         className="flex grow my-6 flex-wrap gap-y-6 gap-x-10 justify-between "
@@ -244,7 +251,7 @@ const Checkout = () => {
           <div className="mb-8">
             <div className="w-full items-center flex justify-between text-lg mb-2.5">
               <span>Subtotal:</span>
-              <span>${checkout?.totalPrice.toFixed(2)}</span>
+              <span>${checkout?.totalPrice?.toFixed(2) || "0.00"}</span>
             </div>
 
             <div className="border-b mb-2.5 w-full border-gray-500"></div>
@@ -258,7 +265,7 @@ const Checkout = () => {
 
             <div className="w-full items-center flex justify-between text-lg mb-2.5">
               <span>Total:</span>
-              <span>${checkout?.totalPrice.toFixed(2)}</span>
+              <span>${checkout?.totalPrice?.toFixed(2) || "0.00"}</span>
             </div>
           </div>
 
@@ -277,6 +284,7 @@ const Checkout = () => {
           </Button>
         </nav>
       </form>
+      )}
     </div>
   );
 };

@@ -1,24 +1,41 @@
-// import { useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { addToCart, fetchCart, removeItem } from "../redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, loginUser, getUser, logoutUser, getAccessToken, updateProfile } from "../redux/slices/authSlice";
 
-// export default function useAuth() {
-  
-//     const dispatch= useDispatch()
-  
-//     const addToCartUtil = async (cartDetails) => {
+export default function useAuth() {
+  const dispatch = useDispatch();
+  const authState = useSelector((state) => state.auth);
 
-//         dispatch(addToCart(cartDetails))
-//   };
+  const registerUserUtil = async (userData) => {
+    return dispatch(registerUser(userData));
+  };
 
-//   const fetchCartsUtil = async (cartData) => {
-//     dispatch(fetchCart(cartData))
-//   };
+  const loginUserUtil = async (userData) => {
+    return dispatch(loginUser(userData));
+  };
 
-//   const fetchCartsUtil = async (cartData) => {
-   
-//     dispatch(removeItem(cartData))
-//   };
+  const getUserUtil = async (token) => {
+    return dispatch(getUser(token));
+  };
 
-//   return { addToCartUtil, fetchCartsUtil, fetchCartsUtil };
-// }
+  const logoutUserUtil = async () => {
+    return dispatch(logoutUser());
+  };
+
+  const getAccessTokenUtil = async () => {
+    return dispatch(getAccessToken());
+  };
+
+  const updateProfileUtil = async (data) => {
+    return dispatch(updateProfile(data));
+  };
+
+  return { 
+    ...authState,
+    registerUserUtil, 
+    loginUserUtil, 
+    getUserUtil, 
+    logoutUserUtil, 
+    getAccessTokenUtil, 
+    updateProfileUtil 
+  };
+}

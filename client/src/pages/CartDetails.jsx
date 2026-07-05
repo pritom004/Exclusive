@@ -7,60 +7,48 @@ import { MdOutlineCancel } from "react-icons/md";
 import { createCheckout } from "../redux/slices/checkoutSlice";
 import ApplyCoupon from "../components/common/ApplyCoupon";
 import Loading from "../components/common/Loading";
-
+import Skeleton from "../modules/Home/components/Skeleton";
 
 const CartDetails = () => {
   const dispatch = useDispatch();
   const { cart, loading } = useSelector((state) => state.cart);
   const { user, guestId } = useSelector((state) => state.auth);
-  const navigate = useNavigate()  
+  const navigate = useNavigate();
 
   useEffect(() => {
     let query = user ? { userId: user._id } : { guestId };
-   
-    
+
     dispatch(fetchCart(query));
   }, [user, guestId]);
 
-  if (loading) {
-    return <Loading />;
-  }
+
 
   const handleRemove = (productId) => {
-     let query = user ? { userId: user._id } : { guestId };
-
-     dispatch(removeItem({productId, ...query}))
-  }
-
-
-
-
-  const handleUpdateItem = (e, productId) => {
-
-
     let query = user ? { userId: user._id } : { guestId };
 
-      dispatch(updateItem({
+    dispatch(removeItem({ productId, ...query }));
+  };
+
+  const handleUpdateItem = (e, productId) => {
+    let query = user ? { userId: user._id } : { guestId };
+
+    dispatch(
+      updateItem({
         productId,
         quantity: e.target.value,
         ...query,
-      }));
-
-
-  }
-
+      }),
+    );
+  };
 
   const handleCheckout = () => {
-    if(!user){
-      navigate("/login?redirect=cart")
-    }else{
-      dispatch(createCheckout(cart._id))
-      navigate("/checkout")
+    if (!user) {
+      navigate("/login?redirect=cart");
+    } else {
+      dispatch(createCheckout({ cartId: cart._id }));
+      navigate("/checkout");
     }
-
-    
-  }
-
+  };
 
   return (
     <div className="max-w-6xl mx-auto py-16 px-6">
@@ -78,10 +66,10 @@ const CartDetails = () => {
             className="w-full overflow-x-auto rounded py-3 px-8 border border-gray-200 gap-3 shadow shadow-gray-50 grid grid-cols-[3fr_1fr_1fr_1fr]"
           >
             <h6 className="grow">Product</h6>
-            <p >Price</p>
+            <p>Price</p>
 
-            <p >Quantity</p>
-            <p >Subtotal</p>
+            <p>Quantity</p>
+            <p>Subtotal</p>
           </div>
 
           {cart &&
@@ -100,10 +88,19 @@ const CartDetails = () => {
                   <h6 className="truncate max-w-28 ">{item.name}</h6>
                 </div>
                 <p>{item.price}</p>
-                <input type="number" className="border-2 border-gray-600/30 rounded outline-none w-12 p-1 " onChange={(e) => handleUpdateItem(e, item.productId)} value={item.quantity}/>
+                <input
+                  type="number"
+                  className="border-2 border-gray-600/30 rounded outline-none w-12 p-1 "
+                  onChange={(e) => handleUpdateItem(e, item.productId)}
+                  value={item.quantity}
+                />
                 <div className="flex items-center justify-between gap-3">
                   <p>{item.subTotal}</p>
-                  <button type="button" onClick={() => handleRemove(item.productId)} className="cursor-pointer">
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(item.productId)}
+                    className="cursor-pointer"
+                  >
                     <MdOutlineCancel className="size-6 text-red-600/70" />
                   </button>
                 </div>

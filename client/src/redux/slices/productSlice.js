@@ -101,9 +101,17 @@ const productSlice = createSlice({
       .addCase(fetchAllProducts.fulfilled, (state, action) => {
         state.allProducts = action.payload;
       })
+      .addCase(fetchProductDetails.pending, (state, action) => {
+        state.loading = true
+      })
       .addCase(fetchProductDetails.fulfilled, (state, action) => {
         state.selectedProduct = action.payload;
-      }).addCase(fetchRelatedProducts.fulfilled, (state, action) => {
+         state.loading = false
+      })
+      .addCase(fetchProductDetails.rejected, (state, action) => {
+        state.loading = false
+      })
+      .addCase(fetchRelatedProducts.fulfilled, (state, action) => {
         state.relatedProducts = action.payload.data;
       })
   },

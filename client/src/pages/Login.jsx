@@ -1,25 +1,23 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../redux/slices/authSlice";
+import useAuth from "../hooks/useAuth";
 import Loading from "../components/common/Loading";
 import Skeleton from "../modules/Home/components/Skeleton";
 
 const Login = () => {
 
-  const { loading, guestId} = useSelector(state => state.auth)
+  const { loading, guestId, loginUserUtil} = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const dispatch = useDispatch()
   const [imageLoaded, setImageLoaded] = useState(false);
 
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true)
     
     const formData = new FormData(e.target);
 
-    dispatch(loginUser({email: formData.get('email'), password: formData.get('password'), guestId}))
+    await loginUserUtil({email: formData.get('email'), password: formData.get('password'), guestId})
 
     e.target.reset()
     setIsSubmitting(false)
@@ -34,7 +32,7 @@ const Login = () => {
     <div className="py-14 flex duration-300 px-4">
        <div>
          <img
-        onLoaded={() => setImageLoaded(true)}
+        onLoad={() => setImageLoaded(true)}
         src="signup-image.jpeg"
         className="sm:max-w-109 xl:max-w-175 hidden md:block"
       />

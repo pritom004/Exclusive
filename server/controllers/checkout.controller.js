@@ -5,28 +5,54 @@ import { stripe } from "../utils/stripe.js";
 import Order from "../models/order.model.js";
 
 export const checkout = async (req, res) => {
-  const { cartId } = req.body;
+  const { cartId, productId, quantity, color, size } = req.body;
 
   try {
+    const checkout = await createCheckout(req.userId);
+
+    // If direct product checkout
+    if (productId && quantity) {
+      // Find product to get price and details securely
+      const mongoose = (await import('mongoose')).default;
+      const Product = mongoose.model('Product');
+      const product = await Product.findById(productId);
+      
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      checkout.items = [{
+        productId: product._id,
+        quantity: quantity,
+        name: product.name,
+        image: product.images[0] || {},
+        size: size || "",
+        color: color || "",
+        price: product.price,
+        subTotal: product.price * quantity
+      }];
+      checkout.totalPrice = product.price * quantity;
+      checkout.shippingCost = 0; // Or whatever default shipping cost
+      
+      await checkout.save();
+      return res.json(checkout);
+    }
+
+    // Otherwise, checkout from cart
     if (!cartId) {
-      return res.status(400).json({
-        message: "Invalid cart",
-      });
+      return res.status(400).json({ message: "Invalid cart or product details" });
     }
 
     const cart = await Cart.findById(cartId);
 
     if (!cart) {
-      return res.status(400).json({
-        message: "Invalid cart",
-      });
+      return res.status(400).json({ message: "Invalid cart" });
     }
 
-    const checkout = await createCheckout(req.userId);
-
-    checkout.items.push(...cart.items);
-    checkout.totalPrice = (checkout.totalPrice || 0) + cart.totalPrice;
+    checkout.items = cart.items; // Overwrite items with current cart
+    checkout.totalPrice = cart.totalPrice;
     checkout.shippingCost = cart.shippingCost || 0;
+    
     await checkout.save();
     await Cart.findByIdAndDelete(cartId);
 
